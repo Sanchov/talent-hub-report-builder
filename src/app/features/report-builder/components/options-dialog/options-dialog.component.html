@@ -1,0 +1,641 @@
+<h2 mat-dialog-title>
+  {{ isSectionOptions ? "Section Options" : "Component Options" }}
+</h2>
+<form *ngIf="form" [formGroup]="form">
+  <mat-dialog-content [formGroup]="form" class="options-form">
+    <ng-container *ngIf="isSectionOptions">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Header</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="narrative-fields">
+          <mat-form-field appearance="fill">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="headerTitle" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Name</mat-label>
+            <input matInput formControlName="headerTraitName" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Value (Optional)</mat-label>
+            <input matInput formControlName="headerTraitValue" />
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Subheader Expansion Panel -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Subheader</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="narrative-fields">
+          <mat-form-field appearance="fill">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="subHeaderTitle" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Name</mat-label>
+            <input matInput formControlName="subHeaderTraitName" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Value (Optional)</mat-label>
+            <input matInput formControlName="subHeaderTraitValue" />
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Description Expansion Panel -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Description</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="narrative-fields">
+          <mat-form-field appearance="fill">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="descriptionTitle" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Name</mat-label>
+            <input matInput formControlName="descriptionTraitName" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Value (Optional)</mat-label>
+            <input matInput formControlName="descriptionTraitValue" />
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Badge Expansion Panel -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Badge</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="narrative-fields">
+          <mat-form-field appearance="fill">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="badgeTitle" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Name</mat-label>
+            <input matInput formControlName="badgeTraitName" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Value (Optional)</mat-label>
+            <input matInput formControlName="badgeTraitValue" />
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Indicator Expansion Panel -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Indicator</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="narrative-fields" [formGroupName]="'indicator'">
+          <mat-form-field appearance="fill">
+            <mat-label>Label Title</mat-label>
+            <input matInput formControlName="labelTitle" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Name</mat-label>
+            <input matInput formControlName="labelTraitName" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Value (Optional)</mat-label>
+            <input matInput formControlName="labelTraitValue" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Color</mat-label>
+            <input matInput formControlName="color" type="color" />
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Chip Expansion Panel -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Chip</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="narrative-fields" [formGroupName]="'chip'">
+          <mat-form-field appearance="fill">
+            <mat-label>Label Title</mat-label>
+            <input matInput formControlName="labelTitle" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Name</mat-label>
+            <input matInput formControlName="labelTraitName" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Trait Value (Optional)</mat-label>
+            <input matInput formControlName="labelTraitValue" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Color</mat-label>
+            <input matInput formControlName="color" type="color" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Background Color</mat-label>
+            <input matInput formControlName="backgroundColor" type="color" />
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>IMAGE</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="narrative-fields">
+          <mat-form-field appearance="fill">
+            <mat-label>IMAGE_URL</mat-label>
+            <input matInput formControlName="imageUrl" />
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+    </ng-container>
+
+    <!-- Component Options -->
+    <ng-container *ngIf="!isSectionOptions">
+      <!-- CARD -->
+      <ng-container *ngIf="data.type === 'CARD'">
+        <mat-form-field appearance="fill">
+          <mat-label>Body Type</mat-label>
+          <mat-select formControlName="bodyType">
+            <mat-option value="STRING">STRING</mat-option>
+            <mat-option value="HTML">HTML</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+
+      <!-- CHIP -->
+      <ng-container *ngIf="data.type === 'CHIP'">
+        <mat-form-field appearance="fill">
+          <mat-label>Indentation Level</mat-label>
+          <input matInput type="number" formControlName="indentationLevel" />
+        </mat-form-field>
+      </ng-container>
+
+      <!-- INDICATOR -->
+      <ng-container *ngIf="data.type === 'INDICATOR'">
+        <mat-form-field appearance="fill">
+          <mat-label>Indentation Level</mat-label>
+          <input matInput type="number" formControlName="indentationLevel" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Unit</mat-label>
+          <mat-select formControlName="unit">
+            <mat-option value="PERCENTAGE">Percentage</mat-option>
+            <mat-option value="ABSOLUTE">Absolute</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Display</mat-label>
+          <mat-select formControlName="display">
+            <mat-option value="CHIPS">Chips</mat-option>
+            <mat-option value="BAR">Bar</mat-option>
+            <mat-option value="BALANCE">Balance</mat-option>
+            <mat-option value="BULLETS">Bullets</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+
+      <!-- CHART -->
+      <ng-container *ngIf="data.type === 'CHART'">
+        <mat-form-field appearance="fill">
+          <mat-label>Indentation Level</mat-label>
+          <input matInput type="number" formControlName="indentationLevel" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Position</mat-label>
+          <mat-select formControlName="position">
+            <mat-option value="LEFT">Left</mat-option>
+            <mat-option value="CENTER">Center</mat-option>
+            <mat-option value="RIGHT">Right</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Axis</mat-label>
+          <mat-select formControlName="indexAxis">
+            <mat-option value="x">X</mat-option>
+            <mat-option value="y">Y</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Chart Type</mat-label>
+          <mat-select formControlName="chartType">
+            <mat-option value="BAR">Bar</mat-option>
+            <mat-option value="BUBBLE">Bubble</mat-option>
+            <mat-option value="LINE">Line</mat-option>
+            <mat-option value="PIE">Pie</mat-option>
+            <mat-option value="POLARAREA">Polar Area</mat-option>
+            <mat-option value="DOUGHNUT">Doughnut</mat-option>
+            <mat-option value="RADAR">Radar</mat-option>
+            <mat-option value="SCATTER">Scatter</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Max Axis</mat-label>
+          <input matInput type="number" formControlName="chartMaxAxis" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Min Axis</mat-label>
+          <input matInput type="number" formControlName="chartMinAxis" />
+        </mat-form-field>
+
+        <mat-slide-toggle formControlName="showValues">
+          Show Values
+        </mat-slide-toggle>
+
+        <mat-slide-toggle formControlName="chartShowChartPlugins">
+          Show Plugins
+        </mat-slide-toggle>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Step Size</mat-label>
+          <input matInput type="number" formControlName="chartStepSize" />
+        </mat-form-field>
+      </ng-container>
+
+      <!-- TABLE -->
+      <ng-container *ngIf="data.type === 'TABLE'">
+        <mat-form-field appearance="fill">
+          <mat-label>Table Type</mat-label>
+          <mat-select formControlName="tableType">
+            <mat-option value="VERTICAL">Vertical</mat-option>
+            <mat-option value="HORIZONTAL">Horizontal</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-slide-toggle formControlName="isHeaderVisible">
+          Header Visible
+        </mat-slide-toggle>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Indentation Level</mat-label>
+          <input matInput type="number" formControlName="indentationLevel" />
+        </mat-form-field>
+
+        <mat-slide-toggle formControlName="isSecondaryTable">
+          Secondary Table
+        </mat-slide-toggle>
+      </ng-container>
+
+      <!-- LIST -->
+      <ng-container *ngIf="data.type === 'LIST'">
+        <mat-form-field appearance="fill">
+          <mat-label>Indentation Level</mat-label>
+          <input matInput type="number" formControlName="indentationLevel" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Body Type</mat-label>
+          <mat-select formControlName="bodyType">
+            <mat-option value="STRING">STRING</mat-option>
+            <mat-option value="HTML">HTML</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>List Order Type</mat-label>
+          <mat-select formControlName="listOrderType">
+            <mat-option value="BULLET">Bullet</mat-option>
+            <mat-option value="NUMERIC">Numeric</mat-option>
+            <mat-option value="ALPHABET">Alphabet</mat-option>
+            <mat-option value="PLAIN">Plain</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-slide-toggle formControlName="hasSideBorder">
+          Has Side Border
+        </mat-slide-toggle>
+
+        <mat-form-field appearance="fill">
+          <mat-label>List Color</mat-label>
+          <input matInput formControlName="listColor" type="color" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>List Background Color</mat-label>
+          <input matInput formControlName="listBackgroundColor" type="color" />
+        </mat-form-field>
+
+        <!-- Badge Configuration -->
+        <mat-divider></mat-divider>
+        <h3>Badge Options</h3>
+        <mat-slide-toggle formControlName="showBadge">
+          Show Badge
+        </mat-slide-toggle>
+
+        <ng-container *ngIf="form.get('showBadge')?.value">
+          <mat-form-field appearance="fill">
+            <mat-label>Badge Value</mat-label>
+            <input matInput formControlName="badgeValue" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Badge Color</mat-label>
+            <input matInput formControlName="badgeColor" type="color" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Badge Background Color</mat-label>
+            <input
+              matInput
+              formControlName="badgeBackgroundColor"
+              type="color"
+            />
+          </mat-form-field>
+        </ng-container>
+
+        <!-- Indicator Configuration -->
+        <mat-divider></mat-divider>
+        <h3>Indicator Options</h3>
+        <mat-slide-toggle formControlName="showIndicator">
+          Show Indicator
+        </mat-slide-toggle>
+
+        <!-- Bar Indicator Configuration -->
+        <mat-divider></mat-divider>
+        <h3>Bar Indicator Options</h3>
+        <mat-slide-toggle formControlName="showBarIndicator">
+          Show Bar Indicator
+        </mat-slide-toggle>
+
+        <!-- Range Configuration -->
+        <mat-divider></mat-divider>
+        <h3>Range Options</h3>
+        <mat-slide-toggle formControlName="showRange">
+          Show Range
+        </mat-slide-toggle>
+      </ng-container>
+
+      <!-- PROPERTY -->
+      <ng-container *ngIf="data.type === 'PROPERTY'">
+        <mat-form-field appearance="fill">
+          <mat-label>Indentation Level</mat-label>
+          <input matInput type="number" formControlName="indentationLevel" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Property Type</mat-label>
+          <mat-select formControlName="propertyType">
+            <mat-option value="PLAIN">Plain</mat-option>
+            <mat-option value="BADGE">Badge</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-slide-toggle formControlName="scroll">
+          Enable Scroll
+        </mat-slide-toggle>
+      </ng-container>
+
+      <!-- QUESTION -->
+      <ng-container *ngIf="data.type === 'QUESTION'">
+        <mat-form-field appearance="fill">
+          <mat-label>Indentation Level</mat-label>
+          <input matInput type="number" formControlName="indentationLevel" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Question Type</mat-label>
+          <mat-select formControlName="questionType">
+            <mat-option value="SINGLE_CHOICE">Single Choice</mat-option>
+            <mat-option value="MULTI_CHOICES">Multiple Choices</mat-option>
+            <mat-option value="TEXT">Text</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+
+      <!-- PANEL -->
+      <ng-container *ngIf="data.type === 'PANEL'">
+        <mat-form-field appearance="fill">
+          <mat-label>Body Type</mat-label>
+          <mat-select formControlName="bodyType">
+            <mat-option value="STRING">STRING</mat-option>
+            <mat-option value="HTML">HTML</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+
+      <!-- PANEL_LAYOUT -->
+      <ng-container *ngIf="data.type === 'PANEL_LAYOUT'">
+        <p>Panel Layout doesn't have configurable options</p>
+      </ng-container>
+
+      <!-- BAR_INDICATOR -->
+      <ng-container *ngIf="data.type === 'BAR_INDICATOR'">
+        <p>Bar Indicator doesn't have configurable options</p>
+      </ng-container>
+
+      <!-- WRAPPED_ITEMS -->
+      <ng-container *ngIf="data.type === 'WRAPPED_ITEMS'">
+        <p>Wrapped Items doesn't have configurable options</p>
+      </ng-container>
+
+      <!-- PDF_BREAK -->
+      <ng-container *ngIf="data.type === 'PDF_BREAK'">
+        <p>PDF Break doesn't have configurable options</p>
+      </ng-container>
+
+      <!-- IMAGE -->
+      <ng-container *ngIf="data.type === 'IMAGE'">
+        <p>Image doesn't have configurable options</p>
+      </ng-container>
+
+      <!-- RANGE -->
+      <ng-container *ngIf="data.type === 'RANGE'">
+        <p>Range doesn't have configurable options</p>
+      </ng-container>
+
+      <!-- CHART_TABLE_INDICATOR -->
+      <ng-container *ngIf="data.type === 'CHART_TABLE_INDICATOR'">
+        <mat-form-field appearance="fill">
+          <mat-label>Indentation Level</mat-label>
+          <input matInput type="number" formControlName="indentationLevel" />
+        </mat-form-field>
+
+        <label class="mat-body-strong">Display Order</label>
+        <div
+          cdkDropList
+          [cdkDropListData]="form.get('displayOrder')?.value"
+          (cdkDropListDropped)="onDrop($event)"
+          class="drag-container"
+        >
+          <div
+            class="drag-item"
+            *ngFor="let item of form.get('displayOrder')?.value"
+            cdkDrag
+          >
+            {{ item }}
+            <button
+              mat-icon-button
+              color="warn"
+              aria-label="Remove"
+              (click)="removeDisplayOrderItem(item)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <mat-form-field appearance="fill" class="add-item-field">
+          <mat-label>Add Display Item</mat-label>
+          <mat-select (selectionChange)="addDisplayOrderItem($event.value)">
+            <mat-option
+              *ngFor="let option of allDisplayOptions"
+              [value]="option"
+              [disabled]="form.get('displayOrder')?.value.includes(option)"
+            >
+              {{ option }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- CHART Sub-component Options -->
+        <mat-expansion-panel
+          *ngIf="form.get('displayOrder')?.value.includes('CHART')"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>Chart Options</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Position</mat-label>
+            <mat-select formControlName="chartPosition">
+              <mat-option value="LEFT">Left</mat-option>
+              <mat-option value="CENTER">Center</mat-option>
+              <mat-option value="RIGHT">Right</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Axis</mat-label>
+            <mat-select formControlName="chartIndexAxis">
+              <mat-option value="x">X</mat-option>
+              <mat-option value="y">Y</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Chart Type</mat-label>
+            <mat-select formControlName="chartType">
+              <mat-option value="BAR">Bar</mat-option>
+              <mat-option value="BUBBLE">Bubble</mat-option>
+              <mat-option value="LINE">Line</mat-option>
+              <mat-option value="PIE">Pie</mat-option>
+              <mat-option value="POLARAREA">Polar Area</mat-option>
+              <mat-option value="DOUGHNUT">Doughnut</mat-option>
+              <mat-option value="RADAR">Radar</mat-option>
+              <mat-option value="SCATTER">Scatter</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Max Axis</mat-label>
+            <input matInput type="number" formControlName="chartMaxAxis" />
+          </mat-form-field>
+
+          <mat-slide-toggle formControlName="chartShowValues">
+            Show Values
+          </mat-slide-toggle>
+        </mat-expansion-panel>
+
+        <!-- TABLE Sub-component Options -->
+        <mat-expansion-panel
+          *ngIf="form.get('displayOrder')?.value.includes('TABLE')"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>Table Options</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Table Type</mat-label>
+            <mat-select formControlName="tableType">
+              <mat-option value="VERTICAL">Vertical</mat-option>
+              <mat-option value="HORIZONTAL">Horizontal</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-slide-toggle formControlName="isHeaderVisible">
+            Header Visible
+          </mat-slide-toggle>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Colored Column</mat-label>
+            <input matInput formControlName="coloredColumn" />
+          </mat-form-field>
+        </mat-expansion-panel>
+
+        <!-- INDICATOR Sub-component Options -->
+        <mat-expansion-panel
+          *ngIf="form.get('displayOrder')?.value.includes('INDICATOR')"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>Indicator Options</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Unit</mat-label>
+            <mat-select formControlName="indicatorUnit">
+              <mat-option value="PERCENTAGE">Percentage</mat-option>
+              <mat-option value="ABSOLUTE">Absolute</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Display</mat-label>
+            <mat-select formControlName="indicatorDisplay">
+              <mat-option value="CHIPS">Chips</mat-option>
+              <mat-option value="BAR">Bar</mat-option>
+              <mat-option value="BALANCE">Balance</mat-option>
+              <mat-option value="BULLETS">Bullets</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-expansion-panel>
+
+        <!-- WRAP Notice -->
+        <div
+          *ngIf="form.get('displayOrder')?.value.includes('WRAP')"
+          class="wrap-notice"
+        >
+          <mat-icon>info</mat-icon>
+          <span>WRAP will display components in a wrapped layout</span>
+        </div>
+      </ng-container>
+    </ng-container>
+  </mat-dialog-content>
+</form>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()">Save</button>
+</mat-dialog-actions>

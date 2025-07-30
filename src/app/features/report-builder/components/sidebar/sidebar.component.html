@@ -1,0 +1,7 @@
+<mat-card
+  *ngFor="let type of componentTypes"
+  draggable="true"
+  (dragstart)="onDragStart($event, type)"
+>
+  {{ type }}
+</mat-card>

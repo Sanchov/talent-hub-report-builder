@@ -1,0 +1,32 @@
+options-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 900px;
+  max-height: 80vh; // Limit height
+  overflow-y: auto; // Allow scrolling
+  margin: 0 auto;
+  padding: 8px 0;
+}
+
+mat-form-field {
+  width: 100%;
+}
+.drag-container {
+  border: 1px dashed #ccc;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background-color: #fafafa;
+}
+
+.drag-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e0e0e0;
+  margin-bottom: 6px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: move;
+}

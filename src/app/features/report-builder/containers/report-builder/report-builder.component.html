@@ -1,0 +1,68 @@
+<form [formGroup]="reportForm">
+  <div class="report-builder-container">
+    <div class="report-content">
+      <div
+        *ngFor="let sectionCtrl of sections.controls; let i = index"
+        [formGroup]="sectionCtrl | controlToFormGroup"
+        class="section"
+        (drop)="onDrop($event, i)"
+        (dragover)="allowDrop($event)"
+      >
+        <div class="section-header">
+          <h3 class="section-title">
+            Section {{ (sectionCtrl | controlToFormGroup).get("order")?.value }}
+          </h3>
+          <button mat-icon-button (click)="openSectionOptions(i)">
+            <mat-icon>settings</mat-icon>
+          </button>
+        </div>
+
+        <div
+          cdkDropList
+          [cdkDropListData]="
+            getComponents(i).controls | controlArrayToFormGroups
+          "
+          (cdkDropListDropped)="dropComponent($event, i)"
+          class="components-list"
+        >
+          <div
+            class="component"
+            *ngFor="let component of getComponents(i).controls; let j = index"
+            [formGroup]="component | controlToFormGroup"
+            cdkDrag
+          >
+            <mat-card class="component-card">
+              <div class="component-header">
+                <strong>{{ component.get("type")?.value }}</strong>
+                <div class="component-actions">
+                  <button mat-button (click)="openOptionsDialog(i, j)">
+                    Options
+                  </button>
+                  <button
+                    mat-button
+                    color="warn"
+                    (click)="removeComponent(i, j)"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+
+      <button mat-raised-button color="accent" (click)="addSection()">
+        + Add Section
+      </button>
+    </div>
+
+    <app-sidebar class="sidebar"></app-sidebar>
+  </div>
+</form>
+
+<div class="log-report-button">
+  <button mat-raised-button color="primary" (click)="logReport()">
+    Log Report
+  </button>
+</div>
