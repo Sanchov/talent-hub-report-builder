@@ -1,13 +1,14 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ComponentType } from '../models/component-types';
+import { NarrativeService } from './narrative.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReportBuilderFormService {
   constructor(private fb: FormBuilder) {}
-
+  private narrativeService = inject(NarrativeService);
   createReportForm(): FormGroup {
     return this.fb.group({
       sections: this.fb.array([this.createSection(1)]),
@@ -37,16 +38,20 @@ export class ReportBuilderFormService {
   }
 
   createSectionOptionsForm(sectionData: any): FormGroup {
-    const header = this.parseNarrative(sectionData.header || '');
-    const subHeader = this.parseNarrative(sectionData.subHeader || '');
-    const description = this.parseNarrative(sectionData.description || '');
-    const badge = this.parseNarrative(sectionData.badge || '');
+    const header = this.narrativeService.parse(sectionData.header || '');
+    const subHeader = this.narrativeService.parse(sectionData.subHeader || '');
+    const description = this.narrativeService.parse(
+      sectionData.description || ''
+    );
+    const badge = this.narrativeService.parse(sectionData.badge || '');
 
     const indicator = sectionData.indicator;
-    const parsedIndicatorLabel = this.parseNarrative(indicator?.label || '');
+    const parsedIndicatorLabel = this.narrativeService.parse(
+      indicator?.label || ''
+    );
 
     const chip = sectionData.chip;
-    const parsedChipLabel = this.parseNarrative(chip?.label || '');
+    const parsedChipLabel = this.narrativeService.parse(chip?.label || '');
 
     return this.fb.group({
       order: [sectionData.order || 0],
@@ -81,7 +86,6 @@ export class ReportBuilderFormService {
         labelTraitValue: [parsedIndicatorLabel.traitValue],
       }),
 
-      // Chip group
       chip: this.fb.group({
         label: [chip?.label || ''],
         labelTitle: [parsedChipLabel.title],

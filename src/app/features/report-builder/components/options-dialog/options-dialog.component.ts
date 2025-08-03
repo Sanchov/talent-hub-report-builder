@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ComponentType } from '../../../../models/component-types';
 import { ReportBuilderFormService } from '../../../../service/report-builder-form.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { NarrativeService } from '../../../../service/narrative.service';
 
 @Component({
   selector: 'app-options-dialog',
@@ -15,6 +16,7 @@ export class OptionsDialogComponent implements OnInit {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<OptionsDialogComponent>);
   private formService = inject(ReportBuilderFormService);
+  private narrativeService = inject(NarrativeService);
   isSectionOptions = false;
   data = inject(MAT_DIALOG_DATA) as {
     type: ComponentType | 'SECTION';
@@ -73,53 +75,50 @@ export class OptionsDialogComponent implements OnInit {
     if (this.isSectionOptions) {
       const formValue = this.form.value;
 
-      const indicatorLabel = this.formatNarrative(
+      // Use narrativeService instead of formatNarrative
+      const indicatorLabel = this.narrativeService.format(
         formValue.indicator.labelTitle,
         formValue.indicator.labelTraitName,
         formValue.indicator.labelTraitValue
       );
 
-      const chipLabel = this.formatNarrative(
+      const chipLabel = this.narrativeService.format(
         formValue.chip.labelTitle,
         formValue.chip.labelTraitName,
         formValue.chip.labelTraitValue
       );
 
       const patchedValue = {
-        header: this.formatNarrative(
+        header: this.narrativeService.format(
           formValue.headerTitle,
           formValue.headerTraitName,
           formValue.headerTraitValue
         ),
-        subHeader: this.formatNarrative(
+        subHeader: this.narrativeService.format(
           formValue.subHeaderTitle,
           formValue.subHeaderTraitName,
           formValue.subHeaderTraitValue
         ),
-        description: this.formatNarrative(
+        description: this.narrativeService.format(
           formValue.descriptionTitle,
           formValue.descriptionTraitName,
           formValue.descriptionTraitValue
         ),
-        badge: this.formatNarrative(
+        badge: this.narrativeService.format(
           formValue.badgeTitle,
           formValue.badgeTraitName,
           formValue.badgeTraitValue
         ),
-
-        // ✅ Correct name for section-level field
         indicators: {
           label: indicatorLabel,
           color: formValue.indicator.color,
         },
-
         chip: {
           label: chipLabel,
           color: formValue.chip.color,
           backgroundColor: formValue.chip.backgroundColor,
         },
         imageUrl: formValue.imageUrl,
-
         order: formValue.order,
         components: this.data.target.value.components || [],
       };
