@@ -162,15 +162,85 @@ export class ReportBuilderFormService {
   }
 
   createInitialData(type: ComponentType): FormGroup {
-    if (type === 'CHART_TABLE_INDICATOR') {
-      return this.fb.group({
-        dataset: this.fb.array([this.createChartTableIndicatorDatasetGroup()]),
-      });
-    }
+    const dataCreators: Record<ComponentType, () => FormGroup> = {
+      CARD: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createCardDatasetGroup()]),
+          header: [this.narrativeService.format('', '')], // Initialize as empty narrative
+          definition: [this.narrativeService.format('', '')],
+        }),
 
-    return this.fb.group({
-      dataset: this.fb.array([]),
-    });
+      INDICATOR: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createIndicatorDatasetGroup()]),
+          header: [this.narrativeService.format('', '')],
+          definition: [this.narrativeService.format('', '')],
+          leftLabel: [this.narrativeService.format('', '')],
+          rightLabel: [this.narrativeService.format('', '')],
+        }),
+      CHIP: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createChipDatasetGroup()]),
+        }),
+      PANEL: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createPanelDatasetGroup()]),
+        }),
+      PANEL_LAYOUT: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createPanelLayoutDatasetGroup()]),
+        }),
+      BAR_INDICATOR: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createBarIndicatorDatasetGroup()]),
+          header: [''],
+          definition: [''],
+        }),
+      WRAPPED_ITEMS: () =>
+        this.fb.group({
+          dataset: this.fb.array([]), // array of strings
+        }),
+      PDF_BREAK: () =>
+        this.fb.group({
+          dataset: this.fb.array([]), // empty array
+        }),
+      PROPERTY: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createPropertyDatasetGroup()]),
+        }),
+      QUESTION: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createQuestionDatasetGroup()]),
+        }),
+      TABLE: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createTableDatasetGroup()]),
+        }),
+      LIST: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createListDatasetGroup()]),
+        }),
+      CHART_TABLE_INDICATOR: () =>
+        this.fb.group({
+          dataset: this.fb.array([
+            this.createChartTableIndicatorDatasetGroup(),
+          ]),
+        }),
+      IMAGE: () =>
+        this.fb.group({
+          dataset: this.fb.array([]), // array of image data
+        }),
+      RANGE: () =>
+        this.fb.group({
+          dataset: this.fb.array([]), // array of range data
+        }),
+      CHART: () =>
+        this.fb.group({
+          dataset: this.fb.array([this.createChartDatasetGroup()]),
+        }),
+    };
+
+    return dataCreators[type]();
   }
 
   private createInitialOptions(type: ComponentType): FormGroup {
@@ -284,21 +354,6 @@ export class ReportBuilderFormService {
     });
   }
 
-  private createChartDatasetGroup(): FormGroup {
-    return this.fb.group({
-      type: ['CHART'],
-      data: this.fb.group({
-        labels: this.fb.array([]),
-        dataset: this.fb.array([
-          this.fb.group({
-            data: this.fb.array([]),
-            backgroundColor: this.fb.array([]),
-          }),
-        ]),
-      }),
-      options: this.createChartOptions({}),
-    });
-  }
   private parseNarrative(narrative: string): {
     title: string;
     traitName: string;
@@ -322,24 +377,117 @@ export class ReportBuilderFormService {
     };
   }
 
-  private createTableDatasetGroup(): FormGroup {
+  private createCardDatasetGroup(): FormGroup {
     return this.fb.group({
-      type: ['TABLE'],
-      data: this.fb.group({
-        headers: this.fb.array([]),
-        dataset: this.fb.array([]),
-      }),
-      options: this.createTableOptions({}),
+      header: [''],
+      percentage: [''],
+      iconUrl: [''],
+      progress: [0],
+      body: [''],
     });
   }
 
   private createIndicatorDatasetGroup(): FormGroup {
     return this.fb.group({
-      type: ['INDICATOR'],
-      options: this.createIndicatorOptions({}),
-      data: this.fb.group({
-        dataset: this.fb.array([]),
+      datasetId: [0],
+      name: [''],
+      scoringRate: [''],
+      valueFrom: [0],
+      valueTo: [0],
+      isSelected: [false],
+      selectedValue: [0],
+      backgroundColor: ['#ffffff'],
+      color: ['#000000'],
+    });
+  }
+
+  private createChipDatasetGroup(): FormGroup {
+    return this.fb.group({
+      text: [''],
+      icon: [''],
+      color: ['#000000'],
+      backgroundColor: ['#ffffff'],
+    });
+  }
+
+  private createPanelDatasetGroup(): FormGroup {
+    return this.fb.group({
+      header: [''],
+      body: [''],
+      explanations: this.fb.array([]),
+    });
+  }
+
+  private createPanelLayoutDatasetGroup(): FormGroup {
+    return this.fb.group({
+      left: this.fb.group({}),
+      right: this.fb.group({}),
+    });
+  }
+
+  private createBarIndicatorDatasetGroup(): FormGroup {
+    return this.fb.group({
+      backgroundColor: ['#ffffff'],
+      label: [''],
+      value: [0],
+      total: [0],
+    });
+  }
+
+  private createPropertyDatasetGroup(): FormGroup {
+    return this.fb.group({
+      key: [''],
+      value: [''],
+      color: ['#000000'],
+    });
+  }
+
+  private createQuestionDatasetGroup(): FormGroup {
+    return this.fb.group({
+      question: [''],
+      answers: this.fb.array([]),
+      selectedValues: this.fb.array([]),
+      answerText: [''],
+      isCorrect: [false],
+    });
+  }
+
+  private createListDatasetGroup(): FormGroup {
+    return this.fb.group({
+      header: [''],
+      definition: [''],
+      chips: this.fb.array([]),
+      indicator: this.fb.group({}),
+      barIndicator: this.fb.group({}),
+      range: this.fb.group({}),
+      body: [''],
+      indentation: [0],
+      badge: this.fb.group({
+        value: [''],
+        color: ['#000000'],
+        backgroundColor: ['#ffffff'],
       }),
+      color: ['#000000'],
+      backgroundColor: ['#ffffff'],
+    });
+  }
+
+  private createChartDatasetGroup(): FormGroup {
+    return this.fb.group({
+      labels: this.fb.array([]),
+      dataset: this.fb.array([
+        this.fb.group({
+          data: this.fb.array([]),
+          backgroundColor: this.fb.array([]),
+        }),
+      ]),
+    });
+  }
+
+  private createTableDatasetGroup(): FormGroup {
+    return this.fb.group({
+      headers: this.fb.array([]),
+      dataset: this.fb.array([]),
     });
   }
 }
