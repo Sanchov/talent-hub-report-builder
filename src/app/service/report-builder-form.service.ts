@@ -153,14 +153,6 @@ export class ReportBuilderFormService {
     components.push(this.createComponent(type as ComponentType));
   }
 
-  createChartTableIndicatorDatasetGroup(): FormGroup {
-    return this.fb.group({
-      chart: this.createChartDatasetGroup(),
-      table: this.createTableDatasetGroup(),
-      indicator: this.createIndicatorDatasetGroup(),
-    });
-  }
-
   createInitialData(type: ComponentType): FormGroup {
     const dataCreators: Record<ComponentType, () => FormGroup> = {
       CARD: () =>
@@ -236,7 +228,18 @@ export class ReportBuilderFormService {
         }),
       CHART: () =>
         this.fb.group({
-          dataset: this.fb.array([this.createChartDatasetGroup()]),
+          header: [this.narrativeService.format('', '')],
+          definition: [this.narrativeService.format('', '')],
+          labels: this.fb.array([]),
+          dataset: this.fb.array([
+            this.fb.group({
+              data: this.fb.array([]),
+              backgroundColor: this.fb.array([]),
+              color: this.fb.array([]),
+              borderRadius: [0],
+              barThickness: [0],
+            }),
+          ]),
         }),
     };
 
@@ -451,7 +454,50 @@ export class ReportBuilderFormService {
       isCorrect: [false],
     });
   }
-
+  private createChartTableIndicatorDatasetGroup(): FormGroup {
+    return this.fb.group({
+      chart: this.fb.group({
+        type: 'CHART',
+        data: this.fb.group({
+          header: [''],
+          definition: [''],
+          labels: this.fb.array([]),
+          dataset: this.fb.array([this.createChartDatasetGroup()]),
+        }),
+        options: this.fb.group({
+          indentationLevel: [0],
+          position: ['LEFT'],
+          chartType: ['BAR'],
+          chartMaxAxis: [null],
+          chartShowValues: [false],
+        }),
+      }),
+      table: this.fb.group({
+        type: 'TABLE',
+        data: this.fb.group({
+          headers: this.fb.array([]),
+          dataset: this.fb.array([]),
+        }),
+        options: this.fb.group({
+          tableType: ['VERTICAL'],
+          isHeaderVisible: [true],
+          coloredColumn: [null],
+          indentationLevel: [0],
+        }),
+      }),
+      indicator: this.fb.group({
+        type: 'INDICATOR',
+        data: this.fb.group({
+          dataset: this.fb.array([this.createIndicatorDatasetGroup()]),
+        }),
+        options: this.fb.group({
+          unit: ['PERCENTAGE'],
+          display: ['CHIPS'],
+          indentationLevel: [0],
+        }),
+      }),
+    });
+  }
   private createListDatasetGroup(): FormGroup {
     return this.fb.group({
       header: [''],
@@ -474,20 +520,24 @@ export class ReportBuilderFormService {
 
   private createChartDatasetGroup(): FormGroup {
     return this.fb.group({
-      labels: this.fb.array([]),
-      dataset: this.fb.array([
-        this.fb.group({
-          data: this.fb.array([]),
-          backgroundColor: this.fb.array([]),
-        }),
-      ]),
+      data: this.fb.array([]),
+      backgroundColor: this.fb.array([]),
+      color: this.fb.array([]),
+      borderRadius: [0],
+      barThickness: [0],
     });
   }
 
   private createTableDatasetGroup(): FormGroup {
     return this.fb.group({
       headers: this.fb.array([]),
-      dataset: this.fb.array([]),
+      dataset: this.fb.array([
+        this.fb.group({
+          Label: [''],
+          Score: [0],
+          color: [''],
+        }),
+      ]),
     });
   }
 }

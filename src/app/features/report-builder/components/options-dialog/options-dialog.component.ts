@@ -37,7 +37,7 @@ export class OptionsDialogComponent implements OnInit {
 
     if (this.isSectionOptions) {
       this.form = this.formService.createSectionOptionsForm(
-        this.data.target.value // ✅ CORRECT
+        this.data.target.value
       );
     } else {
       this.form = this.formService.createOptionsForm(
@@ -142,63 +142,73 @@ export class OptionsDialogComponent implements OnInit {
             this.formService.createInitialData(type).value,
         });
       } else {
+        // Get existing data or create new structure
+        const existingData =
+          this.data.target.value.data ||
+          this.formService.createInitialData(type).value;
+
+        // Create updated dataset with nested components
+        const updatedDataset = existingData.dataset.map((datasetItem: any) => {
+          const updatedItem = { ...datasetItem };
+
+          // Update chart options if included in display order
+          if (formValue.displayOrder.includes('CHART') && updatedItem.chart) {
+            updatedItem.chart.options = {
+              indentationLevel: formValue.indentationLevel,
+              position: formValue.chartPosition,
+              indexAxis: formValue.chartIndexAxis,
+              chartType: formValue.chartType,
+              chartMaxAxis: formValue.chartMaxAxis,
+              showValues: formValue.chartShowValues,
+            };
+          }
+
+          // Update table options if included in display order
+          if (formValue.displayOrder.includes('TABLE') && updatedItem.table) {
+            updatedItem.table.options = {
+              tableType: formValue.tableType,
+              isHeaderVisible: formValue.isHeaderVisible,
+              coloredColumn: formValue.coloredColumn,
+              indentationLevel: formValue.indentationLevel,
+            };
+          }
+
+          // Update indicator options if included in display order
+          if (
+            formValue.displayOrder.includes('INDICATOR') &&
+            updatedItem.indicator
+          ) {
+            updatedItem.indicator.options = {
+              unit: formValue.indicatorUnit,
+              display: formValue.indicatorDisplay,
+              indentationLevel: formValue.indentationLevel,
+            };
+          }
+
+          return updatedItem;
+        });
+
+        // Create the final updated data structure
+        const updatedData = {
+          ...existingData,
+          dataset: updatedDataset,
+        };
+
+        // Create the options object
         const options = {
           indentationLevel: formValue.indentationLevel,
           displayOrder: formValue.displayOrder,
-          ...(formValue.displayOrder.includes('CHART') && {
-            chart: {
-              options: {
-                position: formValue.chartPosition,
-                indexAxis: formValue.chartIndexAxis,
-                chartType: formValue.chartType,
-                chartMaxAxis: formValue.chartMaxAxis,
-                showValues: formValue.chartShowValues,
-                indentationLevel: 0,
-              },
-            },
-          }),
-          ...(formValue.displayOrder.includes('TABLE') && {
-            table: {
-              options: {
-                tableType: formValue.tableType,
-                isHeaderVisible: formValue.isHeaderVisible,
-                coloredColumn: formValue.coloredColumn,
-                indentationLevel: 0,
-              },
-            },
-          }),
-          ...(formValue.displayOrder.includes('INDICATOR') && {
-            indicator: {
-              options: {
-                unit: formValue.indicatorUnit,
-                display: formValue.indicatorDisplay,
-                indentationLevel: 0,
-              },
-            },
-          }),
         };
 
+        // Patch the target form with the updated structure
         this.data.target.patchValue({
           type: type,
           options: options,
-          data:
-            this.data.target.value.data ||
-            this.formService.createInitialData(type).value,
+          data: updatedData,
         });
       }
     }
 
     this.dialogRef.close(true);
-  }
-
-  private formatNarrative(
-    title: string,
-    traitName: string,
-    traitValue?: string
-  ): string {
-    if (!title && !traitName) return '';
-    return `$narrative(${title || ''},${traitName || ''}${
-      traitValue ? `,${traitValue}` : ''
-    })`;
   }
 }
