@@ -46,6 +46,7 @@ export class OptionsDialogComponent implements OnInit {
       );
     }
   }
+
   onDrop(event: CdkDragDrop<string[]>) {
     if (this.isSectionOptions) return;
 
@@ -75,7 +76,7 @@ export class OptionsDialogComponent implements OnInit {
     if (this.isSectionOptions) {
       const formValue = this.form.value;
 
-      // Use narrativeService instead of formatNarrative
+      // Use narrativeService to format values
       const indicatorLabel = this.narrativeService.format(
         formValue.indicator.labelTitle,
         formValue.indicator.labelTraitName,
@@ -134,26 +135,30 @@ export class OptionsDialogComponent implements OnInit {
       }
 
       if (type !== 'CHART_TABLE_INDICATOR') {
+        // For regular components, patch the options directly
+        const currentData =
+          this.data.target.get('data')?.value ||
+          this.formService.createComponentData(type).value;
+
         this.data.target.patchValue({
           type: type,
           options: formValue,
-          data:
-            this.data.target.value.data ||
-            this.formService.createInitialData(type).value,
+          data: currentData,
         });
       } else {
-        // Get existing data or create new structure
-        const existingData =
-          this.data.target.value.data ||
-          this.formService.createInitialData(type).value;
+        // Handle CHART_TABLE_INDICATOR component
+        const currentData =
+          this.data.target.get('data')?.value ||
+          this.formService.createComponentData(type).value;
 
-        // Create updated dataset with nested components
-        const updatedDataset = existingData.dataset.map((datasetItem: any) => {
+        // Update the dataset with nested component options
+        const updatedDataset = currentData.dataset.map((datasetItem: any) => {
           const updatedItem = { ...datasetItem };
 
-          // Update chart options if included in display order
-          if (formValue.displayOrder.includes('CHART') && updatedItem.chart) {
+          // Update chart options if chart exists
+          if (updatedItem.chart) {
             updatedItem.chart.options = {
+              ...updatedItem.chart.options,
               indentationLevel: formValue.indentationLevel,
               position: formValue.chartPosition,
               indexAxis: formValue.chartIndexAxis,
@@ -163,9 +168,10 @@ export class OptionsDialogComponent implements OnInit {
             };
           }
 
-          // Update table options if included in display order
-          if (formValue.displayOrder.includes('TABLE') && updatedItem.table) {
+          // Update table options if table exists
+          if (updatedItem.table) {
             updatedItem.table.options = {
+              ...updatedItem.table.options,
               tableType: formValue.tableType,
               isHeaderVisible: formValue.isHeaderVisible,
               coloredColumn: formValue.coloredColumn,
@@ -173,12 +179,10 @@ export class OptionsDialogComponent implements OnInit {
             };
           }
 
-          // Update indicator options if included in display order
-          if (
-            formValue.displayOrder.includes('INDICATOR') &&
-            updatedItem.indicator
-          ) {
+          // Update indicator options if indicator exists
+          if (updatedItem.indicator) {
             updatedItem.indicator.options = {
+              ...updatedItem.indicator.options,
               unit: formValue.indicatorUnit,
               display: formValue.indicatorDisplay,
               indentationLevel: formValue.indentationLevel,
@@ -190,7 +194,7 @@ export class OptionsDialogComponent implements OnInit {
 
         // Create the final updated data structure
         const updatedData = {
-          ...existingData,
+          ...currentData,
           dataset: updatedDataset,
         };
 

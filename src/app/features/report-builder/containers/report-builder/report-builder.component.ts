@@ -10,6 +10,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ReportBuilderFormService } from '../../../../service/report-builder-form.service';
 import { MatDialog } from '@angular/material/dialog';
 import { OptionsDialogComponent } from '../../components/options-dialog/options-dialog.component';
+import { DataDialogComponent } from '../../components/data-dialog/data-dialog.component';
 @Component({
   selector: 'app-report-builder',
   templateUrl: './report-builder.component.html',
@@ -42,7 +43,25 @@ export class ReportBuilderComponent implements OnInit {
       data: {
         type: component.get('type')?.value,
         options: component.get('options')?.value,
-        target: component, // Use consistent 'target' naming
+        target: component,
+      },
+    });
+  }
+
+  openDataDialog(sectionIndex: number, componentIndex: number): void {
+    const section = this.sections.at(sectionIndex) as FormGroup;
+    const components = this.formService.getComponents(section);
+    const component = components.at(componentIndex) as FormGroup;
+
+    this.dialog.open(DataDialogComponent, {
+      width: '700px',
+      height: 'auto',
+      maxHeight: '90vh',
+      panelClass: 'custom-dialog-panel',
+      data: {
+        type: component.get('type')?.value,
+        data: component.get('data')?.value,
+        target: component,
       },
     });
   }
@@ -92,7 +111,6 @@ export class ReportBuilderComponent implements OnInit {
     const controls = componentsArray.controls;
     moveItemInArray(controls, event.previousIndex, event.currentIndex);
 
-   
     const reordered = new FormArray<AbstractControl>([]);
     controls.forEach((control) => reordered.push(control));
     section.setControl('components', reordered);

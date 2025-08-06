@@ -24,6 +24,7 @@ import { SectionComponent } from './components/section/section.component';
 import { ControlToFormGroupPipe } from '../../pipes/control-to-form-group.pipe';
 import { ControlArrayToFormGroupsPipe } from '../../pipes/control-array-to-form-groups.pipe';
 import { OptionsDialogComponent } from './components/options-dialog/options-dialog.component';
+import { DataDialogComponent } from './components/data-dialog/data-dialog.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { OptionsDialogComponent } from './components/options-dialog/options-dial
     ControlToFormGroupPipe,
     ControlArrayToFormGroupsPipe,
     OptionsDialogComponent,
+    DataDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -53,7 +55,7 @@ import { OptionsDialogComponent } from './components/options-dialog/options-dial
     MatIconModule,
     MatExpansionModule,
     MatOptionModule,
-
+    ReactiveFormsModule,
     // CDK Modules
     DragDropModule,
   ],
