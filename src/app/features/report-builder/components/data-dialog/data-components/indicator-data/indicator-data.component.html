@@ -1,0 +1,155 @@
+<div [formGroup]="form">
+  <div formGroupName="data">
+    <!-- HEADER -->
+    <h3>Header</h3>
+    <mat-accordion *ngIf="isNarrativeField('header')">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Header Narrative</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Title</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('header')?.title"
+            (input)="onNarrativeInput($event, 'header', 'title')"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Name</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('header')?.traitName"
+            (input)="onNarrativeInput($event, 'header', 'traitName')"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Value (Optional)</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('header')?.traitValue"
+            (input)="onNarrativeInput($event, 'header', 'traitValue')"
+          />
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- DEFINITION -->
+    <h3>Definition</h3>
+    <mat-accordion *ngIf="isNarrativeField('definition')">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Definition Narrative</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Title</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('definition')?.title"
+            (input)="onNarrativeInput($event, 'definition', 'title')"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Name</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('definition')?.traitName"
+            (input)="onNarrativeInput($event, 'definition', 'traitName')"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Value (Optional)</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('definition')?.traitValue"
+            (input)="onNarrativeInput($event, 'definition', 'traitValue')"
+          />
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- LEFT LABEL -->
+    <h3>Left Label</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Left Label</mat-label>
+      <input matInput formControlName="leftLabel" />
+    </mat-form-field>
+
+    <!-- RIGHT LABEL -->
+    <h3>Right Label</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Right Label</mat-label>
+      <input matInput formControlName="rightLabel" />
+    </mat-form-field>
+
+    <!-- DATASET -->
+    <h3>Dataset</h3>
+    <div formArrayName="dataset">
+      <div
+        *ngFor="let item of getDatasetControls(); let i = index"
+        [formGroupName]="i"
+      >
+        <mat-card>
+          <mat-form-field appearance="fill">
+            <mat-label>Dataset ID</mat-label>
+            <input matInput type="number" formControlName="datasetId" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Scoring Rate</mat-label>
+            <input matInput formControlName="scoringRate" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Value From</mat-label>
+            <input matInput type="number" formControlName="valueFrom" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Value To</mat-label>
+            <input matInput type="number" formControlName="valueTo" />
+          </mat-form-field>
+
+          <mat-checkbox formControlName="isSelected">Is Selected</mat-checkbox>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Selected Value</mat-label>
+            <input matInput type="number" formControlName="selectedValue" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Background Color</mat-label>
+            <input matInput type="color" formControlName="backgroundColor" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Color</mat-label>
+            <input matInput type="color" formControlName="color" />
+          </mat-form-field>
+
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removeDatasetItem('dataset', i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card>
+      </div>
+    </div>
+    <button mat-button (click)="addDatasetItem('dataset')">
+      Add Indicator Item
+    </button>
+  </div>
+</div>

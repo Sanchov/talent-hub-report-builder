@@ -1,0 +1,39 @@
+<div [formGroup]="form">
+  <div formGroupName="data">
+    <h3>Image</h3>
+    <div formArrayName="dataset">
+      <div
+        *ngFor="let image of getImageDatasetControls(); let i = index"
+        [formGroupName]="i"
+      >
+        <mat-card>
+          <mat-form-field appearance="fill">
+            <mat-label>Image URL</mat-label>
+            <input matInput formControlName="url" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Width (px)</mat-label>
+            <input matInput type="number" formControlName="width" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Height (px)</mat-label>
+            <input matInput type="number" formControlName="height" />
+          </mat-form-field>
+
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removeImageDatasetItem(i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card>
+      </div>
+      <button mat-button (click)="addImageDatasetItem()">
+        Add Another Image
+      </button>
+    </div>
+  </div>
+</div>

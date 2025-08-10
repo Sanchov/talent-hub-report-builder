@@ -1,0 +1,166 @@
+<div [formGroup]="form">
+  <div formGroupName="data">
+    <!-- Header (Narrative) -->
+    <h3>Header</h3>
+    <mat-accordion *ngIf="isNarrativeField('header')">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Header Narrative</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-form-field appearance="fill">
+          <mat-label>Title</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('header')?.title"
+            (input)="onNarrativeInput($event, 'header', 'title')"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Name</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('header')?.traitName"
+            (input)="onNarrativeInput($event, 'header', 'traitName')"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Value</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('header')?.traitValue"
+            (input)="onNarrativeInput($event, 'header', 'traitValue')"
+          />
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Definition (Narrative) -->
+    <h3>Definition</h3>
+    <mat-accordion *ngIf="isNarrativeField('definition')">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Definition Narrative</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-form-field appearance="fill">
+          <mat-label>Title</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('definition')?.title"
+            (input)="onNarrativeInput($event, 'definition', 'title')"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Name</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('definition')?.traitName"
+            (input)="onNarrativeInput($event, 'definition', 'traitName')"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Value</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('definition')?.traitValue"
+            (input)="onNarrativeInput($event, 'definition', 'traitValue')"
+          />
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Question Dataset -->
+    <h3>Question</h3>
+    <div formArrayName="dataset">
+      <div
+        *ngFor="let question of getDatasetControls(); let i = index"
+        [formGroupName]="i"
+      >
+        <mat-card>
+          <!-- Main Question -->
+          <mat-form-field appearance="fill">
+            <mat-label>Question</mat-label>
+            <input matInput formControlName="question" />
+          </mat-form-field>
+
+          <!-- Answer Text -->
+          <mat-form-field appearance="fill">
+            <mat-label>Answer Text</mat-label>
+            <input matInput formControlName="answerText" />
+          </mat-form-field>
+
+          <!-- Is Correct -->
+          <mat-checkbox formControlName="isCorrect"
+            >Is Correct Answer</mat-checkbox
+          >
+
+          <!-- Answers Array -->
+          <h4>Possible Answers</h4>
+          <div formArrayName="answers">
+            <div
+              *ngFor="
+                let answer of getQuestionAnswers(question).controls;
+                let j = index
+              "
+              [formGroupName]="j"
+            >
+              <mat-form-field appearance="fill">
+                <mat-label>Answer {{ j + 1 }}</mat-label>
+                <input matInput formControlName="text" />
+              </mat-form-field>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="removeQuestionAnswer(i, j)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+            <button mat-button (click)="addQuestionAnswer(i)">
+              Add Answer Option
+            </button>
+          </div>
+
+          <!-- Selected Values Array -->
+          <h4>Selected Values</h4>
+          <div formArrayName="selectedValues">
+            <div
+              *ngFor="
+                let selected of getSelectedValues(question).controls;
+                let j = index
+              "
+            >
+              <mat-form-field appearance="fill">
+                <mat-label>Selected Value {{ j + 1 }}</mat-label>
+                <input
+                  matInput
+                  [formControl]="getSelectedValueControl(question, j)"
+                />
+              </mat-form-field>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="removeSelectedValue(i, j)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+            <button mat-button (click)="addSelectedValue(i)">
+              Add Selected Value
+            </button>
+          </div>
+
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removeDatasetItem('dataset', i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card>
+      </div>
+      <button mat-button (click)="addDatasetItem('dataset')">
+        Add Question
+      </button>
+    </div>
+  </div>
+</div>

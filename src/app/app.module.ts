@@ -9,10 +9,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { ControlToFormGroupPipe } from './pipes/control-to-form-group.pipe';
 import { ControlArrayToFormGroupsPipe } from './pipes/control-array-to-form-groups.pipe';
-import { ChartDataComponent } from './components/data-dialog/data-components/chart-data/chart-data.component';
 
 @NgModule({
-  declarations: [AppComponent, ChartDataComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -1,0 +1,109 @@
+<div [formGroup]="form">
+  <div formGroupName="data">
+    <!-- Header (Narrative) -->
+    <h3>Header</h3>
+    <mat-accordion *ngIf="isNarrativeField('header')">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Header Narrative</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-form-field appearance="fill">
+          <mat-label>Title</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('header')?.title"
+            (input)="onNarrativeInput($event, 'header', 'title')"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Name</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('header')?.traitName"
+            (input)="onNarrativeInput($event, 'header', 'traitName')"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Value</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('header')?.traitValue"
+            (input)="onNarrativeInput($event, 'header', 'traitValue')"
+          />
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Definition (Narrative) -->
+    <h3>Definition</h3>
+    <mat-accordion *ngIf="isNarrativeField('definition')">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Definition Narrative</mat-panel-title>
+        </mat-expansion-panel-header>
+       
+        <mat-form-field appearance="fill">
+          <mat-label>Title</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('definition')?.title"
+            (input)="onNarrativeInput($event, 'definition', 'title')"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Name</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('definition')?.traitName"
+            (input)="onNarrativeInput($event, 'definition', 'traitName')"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Trait Value</mat-label>
+          <input
+            matInput
+            [value]="getNarrativeFields('definition')?.traitValue"
+            (input)="onNarrativeInput($event, 'definition', 'traitValue')"
+          />
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Dataset Items -->
+    <h3>Properties</h3>
+    <div formArrayName="dataset">
+      <div
+        *ngFor="let property of getDatasetControls(); let i = index"
+        [formGroupName]="i"
+      >
+        <mat-card>
+          <mat-form-field appearance="fill">
+            <mat-label>Key</mat-label>
+            <input matInput formControlName="key" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Value</mat-label>
+            <input matInput formControlName="value" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Color</mat-label>
+            <input matInput type="color" formControlName="color" />
+          </mat-form-field>
+
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removeDatasetItem('dataset', i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card>
+      </div>
+      <button mat-button (click)="addDatasetItem('dataset')">
+        Add Property
+      </button>
+    </div>
+  </div>
+</div>

@@ -43,7 +43,6 @@ export class NarrativeService {
     }`;
   }
 
-  
   isNarrative(str: string): boolean {
     return (
       str?.startsWith(this.NARRATIVE_PREFIX) &&

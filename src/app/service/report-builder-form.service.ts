@@ -482,7 +482,7 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  private createPanelLayoutDataset(): FormGroup & WithNarrativeMetadata {
+  createPanelLayoutDataset(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
       left: this.getComponentDefaults('PANEL'),
       right: this.getComponentDefaults('CARD'),
@@ -490,7 +490,7 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  private createBarIndicatorDataset(): FormGroup & WithNarrativeMetadata {
+  createBarIndicatorDataset(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
       backgroundColor: ['#ffffff'],
       label: [''],
@@ -514,7 +514,7 @@ export class ReportBuilderFormService {
   private createQuestionDataset(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
       question: [''],
-      answers: this.fb.array([{ text: '', value: '' }]),
+      answers: this.fb.array([this.createAnswerGroup()]),
       selectedValues: this.fb.array([]),
       answerText: [''],
       isCorrect: [false],
@@ -522,6 +522,12 @@ export class ReportBuilderFormService {
     return group;
   }
 
+  private createAnswerGroup(): FormGroup {
+    return this.fb.group({
+      text: [''],
+      value: [''],
+    });
+  }
   private createListDataset(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
       header: [this.narrativeService.format('', '')],
@@ -744,9 +750,8 @@ export class ReportBuilderFormService {
         const obj: any = {};
         Object.keys(form.controls).forEach((key) => {
           obj[key] = formToObject(form.controls[key]);
-          // Preserve narrative metadata - only if the value is an object
+
           if (this.isNarrativeField(form.controls[key])) {
-            // Added missing parenthesis here
             if (typeof obj[key] === 'object' && obj[key] !== null) {
               obj[key].__isNarrative = true;
             }
@@ -756,7 +761,7 @@ export class ReportBuilderFormService {
       } else if (form instanceof FormArray) {
         return form.controls.map((control) => {
           const value = formToObject(control);
-          // Preserve narrative metadata - only if the value is an object
+
           if (this.isNarrativeField(control)) {
             if (typeof value === 'object' && value !== null) {
               value.__isNarrative = true;

@@ -88,14 +88,20 @@ export class DataDialogComponent implements OnInit {
     event: Event,
     index: number,
     controlName: string,
-    field: 'title' | 'traitName' | 'traitValue'
+    field: string
   ) {
-    const input = event.target as HTMLInputElement | null;
-    if (input && this.datasetArray) {
-      const item = this.datasetArray.at(index) as FormGroup;
-      const control = item.get(controlName);
-      if (control) {
-        this.updateNarrativeFieldInControl(control, field, input.value);
+    if (field === 'title' || field === 'traitName' || field === 'traitValue') {
+      const input = event.target as HTMLInputElement | null;
+      if (input && this.datasetArray) {
+        const item = this.datasetArray.at(index) as FormGroup;
+        const control = item.get(controlName);
+        if (control) {
+          this.updateNarrativeFieldInControl(
+            control,
+            field as 'title' | 'traitName' | 'traitValue',
+            input.value
+          );
+        }
       }
     }
   }
@@ -167,11 +173,14 @@ export class DataDialogComponent implements OnInit {
   onNarrativeInput(
     event: Event,
     controlName: string,
-    field: 'title' | 'traitName' | 'traitValue'
+    field: string // ← make this `string`, not the union
   ) {
-    const input = event.target as HTMLInputElement | null;
-    if (input) {
-      this.updateNarrativeField(controlName, field, input.value);
+    if (field === 'title' || field === 'traitName' || field === 'traitValue') {
+      this.updateNarrativeField(
+        controlName,
+        field,
+        (event.target as HTMLInputElement).value
+      );
     }
   }
   getChipControls(): FormGroup[] {

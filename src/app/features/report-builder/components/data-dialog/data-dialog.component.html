@@ -4,1276 +4,220 @@
   <mat-dialog-content>
     <ng-container [ngSwitch]="data.type">
       <!-- CARD -->
-      <ng-container *ngSwitchCase="'CARD'">
-        <div formGroupName="data">
-          <h3>Header</h3>
-
-          <mat-accordion *ngIf="isNarrativeField('header')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Header Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.title"
-                  (input)="onNarrativeInput($event, 'header', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.traitName"
-                  (input)="onNarrativeInput($event, 'header', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.traitValue"
-                  (input)="onNarrativeInput($event, 'header', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <h3>Definition</h3>
-
-          <mat-accordion *ngIf="isNarrativeField('definition')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Definition Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.title"
-                  (input)="onNarrativeInput($event, 'definition', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.traitName"
-                  (input)="onNarrativeInput($event, 'definition', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.traitValue"
-                  (input)="onNarrativeInput($event, 'definition', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <h3>Dataset Items</h3>
-          <div formArrayName="dataset" *ngIf="datasetArray">
-            <div
-              *ngFor="let item of datasetArray.controls; let i = index"
-              [formGroupName]="i"
-            >
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>Dataset Item {{ i + 1 }}</mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <!-- Header Narrative for each dataset item -->
-                <h4>Header</h4>
-                <mat-accordion
-                  *ngIf="isNarrativeFieldFromControl(item.get('header'))"
-                >
-                  <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                      <mat-panel-title>Header Narrative</mat-panel-title>
-                    </mat-expansion-panel-header>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Title</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(item.get('header'))
-                            ?.title
-                        "
-                        (input)="
-                          onDatasetNarrativeInput($event, i, 'header', 'title')
-                        "
-                      />
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Trait Name</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(item.get('header'))
-                            ?.traitName
-                        "
-                        (input)="
-                          onDatasetNarrativeInput(
-                            $event,
-                            i,
-                            'header',
-                            'traitName'
-                          )
-                        "
-                      />
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Trait Value (Optional)</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(item.get('header'))
-                            ?.traitValue
-                        "
-                        (input)="
-                          onDatasetNarrativeInput(
-                            $event,
-                            i,
-                            'header',
-                            'traitValue'
-                          )
-                        "
-                      />
-                    </mat-form-field>
-                  </mat-expansion-panel>
-                </mat-accordion>
-
-                <!-- Body Narrative for each dataset item -->
-                <h4>Body</h4>
-                <mat-accordion
-                  *ngIf="isNarrativeFieldFromControl(item.get('body'))"
-                >
-                  <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                      <mat-panel-title>Body Narrative</mat-panel-title>
-                    </mat-expansion-panel-header>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Title</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(item.get('body'))?.title
-                        "
-                        (input)="
-                          onDatasetNarrativeInput($event, i, 'body', 'title')
-                        "
-                      />
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Trait Name</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(item.get('body'))
-                            ?.traitName
-                        "
-                        (input)="
-                          onDatasetNarrativeInput(
-                            $event,
-                            i,
-                            'body',
-                            'traitName'
-                          )
-                        "
-                      />
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Trait Value (Optional)</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(item.get('body'))
-                            ?.traitValue
-                        "
-                        (input)="
-                          onDatasetNarrativeInput(
-                            $event,
-                            i,
-                            'body',
-                            'traitValue'
-                          )
-                        "
-                      />
-                    </mat-form-field>
-                  </mat-expansion-panel>
-                </mat-accordion>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Percentage</mat-label>
-                  <input matInput formControlName="percentage" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Icon URL</mat-label>
-                  <input matInput formControlName="iconUrl" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Progress (0-100)</mat-label>
-                  <input
-                    matInput
-                    type="number"
-                    min="0"
-                    max="100"
-                    formControlName="progress"
-                  />
-                </mat-form-field>
-
-                <button
-                  mat-button
-                  color="warn"
-                  (click)="removeDatasetItem('dataset', i)"
-                >
-                  Remove Item
-                </button>
-              </mat-expansion-panel>
-            </div>
-
-            <button
-              mat-button
-              color="primary"
-              (click)="addDatasetItem('dataset')"
-            >
-              Add Dataset Item
-            </button>
-          </div>
-        </div>
-      </ng-container>
-
+      <app-card-data
+        *ngSwitchCase="'CARD'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [isNarrativeFieldFromControl]="isNarrativeFieldFromControl.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-card-data>
       <!-- INDICATOR -->
-      <ng-container *ngSwitchCase="'INDICATOR'">
-        <div formGroupName="data">
-          <!-- HEADER -->
-          <h3>Header</h3>
-          <mat-accordion *ngIf="isNarrativeField('header')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Header Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.title"
-                  (input)="onNarrativeInput($event, 'header', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.traitName"
-                  (input)="onNarrativeInput($event, 'header', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.traitValue"
-                  (input)="onNarrativeInput($event, 'header', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <!-- DEFINITION -->
-          <h3>Definition</h3>
-          <mat-accordion *ngIf="isNarrativeField('definition')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Definition Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.title"
-                  (input)="onNarrativeInput($event, 'definition', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.traitName"
-                  (input)="onNarrativeInput($event, 'definition', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.traitValue"
-                  (input)="onNarrativeInput($event, 'definition', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <!-- LEFT LABEL -->
-          <h3>Left Label</h3>
-          <mat-form-field appearance="fill">
-            <mat-label>Left Label</mat-label>
-            <input matInput formControlName="leftLabel" />
-          </mat-form-field>
-
-          <!-- RIGHT LABEL -->
-          <h3>Right Label</h3>
-          <mat-form-field appearance="fill">
-            <mat-label>Right Label</mat-label>
-            <input matInput formControlName="rightLabel" />
-          </mat-form-field>
-
-          <!-- DATASET -->
-          <h3>Dataset</h3>
-          <div formArrayName="dataset">
-            <div
-              *ngFor="let item of getDatasetControls(); let i = index"
-              [formGroupName]="i"
-            >
-              <mat-card>
-                <mat-form-field appearance="fill">
-                  <mat-label>Dataset ID</mat-label>
-                  <input matInput type="number" formControlName="datasetId" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Name</mat-label>
-                  <input matInput formControlName="name" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Scoring Rate</mat-label>
-                  <input matInput formControlName="scoringRate" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Value From</mat-label>
-                  <input matInput type="number" formControlName="valueFrom" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Value To</mat-label>
-                  <input matInput type="number" formControlName="valueTo" />
-                </mat-form-field>
-
-                <mat-checkbox formControlName="isSelected"
-                  >Is Selected</mat-checkbox
-                >
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Selected Value</mat-label>
-                  <input
-                    matInput
-                    type="number"
-                    formControlName="selectedValue"
-                  />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Background Color</mat-label>
-                  <input
-                    matInput
-                    type="color"
-                    formControlName="backgroundColor"
-                  />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Color</mat-label>
-                  <input matInput type="color" formControlName="color" />
-                </mat-form-field>
-
-                <button
-                  mat-icon-button
-                  color="warn"
-                  (click)="removeDatasetItem('dataset', i)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </mat-card>
-            </div>
-          </div>
-          <button mat-button (click)="addDatasetItem('dataset')">
-            Add Indicator Item
-          </button>
-        </div>
-      </ng-container>
+      <app-indicator-data
+        *ngSwitchCase="'INDICATOR'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [isNarrativeFieldFromControl]="isNarrativeFieldFromControl.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-indicator-data>
 
       <!-- CHART -->
-      <ng-container *ngSwitchCase="'CHART'">
-        <div formGroupName="data">
-          <!-- Header Narrative -->
-          <h3>Header</h3>
-          <mat-accordion *ngIf="isNarrativeField('header')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Header Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.title"
-                  (input)="onNarrativeInput($event, 'header', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.traitName"
-                  (input)="onNarrativeInput($event, 'header', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.traitValue"
-                  (input)="onNarrativeInput($event, 'header', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <!-- Definition Narrative -->
-          <h3>Definition</h3>
-          <mat-accordion *ngIf="isNarrativeField('definition')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Definition Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.title"
-                  (input)="onNarrativeInput($event, 'definition', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.traitName"
-                  (input)="onNarrativeInput($event, 'definition', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.traitValue"
-                  (input)="onNarrativeInput($event, 'definition', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <!-- Labels Narrative -->
-          <h3>Labels</h3>
-          <mat-accordion *ngIf="isNarrativeField('labels')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Labels Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('labels')?.title"
-                  (input)="onNarrativeInput($event, 'labels', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('labels')?.traitName"
-                  (input)="onNarrativeInput($event, 'labels', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('labels')?.traitValue"
-                  (input)="onNarrativeInput($event, 'labels', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <!-- Dataset -->
-          <h3>Dataset</h3>
-          <div formArrayName="dataset">
-            <div
-              *ngFor="let item of getDatasetControls(); let i = index"
-              [formGroupName]="i"
-            >
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>Dataset {{ i + 1 }}</mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <mat-card>
-                  <!-- Data Points -->
-                  <h4>Data Points</h4>
-                  <div formArrayName="data">
-                    <div
-                      *ngFor="
-                        let dataPoint of getChartDataPoints(item).controls;
-                        let j = index
-                      "
-                      [formGroupName]="j"
-                    >
-                      <mat-form-field appearance="fill">
-                        <mat-label>Data Point {{ j + 1 }}</mat-label>
-                        <input
-                          matInput
-                          type="number"
-                          [formControl]="
-                            getFormControlFromArray(getChartDataPoints(item), j)
-                          "
-                        />
-                      </mat-form-field>
-                      <button
-                        mat-icon-button
-                        color="warn"
-                        (click)="removeDataPoint(item, j)"
-                        *ngIf="getChartDataPoints(item).controls.length > 1"
-                      >
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </div>
-                    <button mat-button (click)="addDataPoint(item)">
-                      <mat-icon>add</mat-icon> Add Data Point
-                    </button>
-                  </div>
-
-                  <!-- Background Colors -->
-                  <h4>Background Colors</h4>
-                  <div formArrayName="backgroundColor">
-                    <div
-                      *ngFor="
-                        let control of getChartBackgroundColors(item).controls;
-                        let j = index
-                      "
-                    >
-                      <mat-form-field appearance="fill">
-                        <mat-label>BG Color {{ j + 1 }}</mat-label>
-                        <input
-                          matInput
-                          type="color"
-                          [formControl]="
-                            getFormControlFromArray(
-                              getChartBackgroundColors(item),
-                              j
-                            )
-                          "
-                        />
-                      </mat-form-field>
-                      <button
-                        mat-icon-button
-                        color="warn"
-                        (click)="removeBackgroundColor(item, j)"
-                        *ngIf="
-                          getChartBackgroundColors(item).controls.length > 0
-                        "
-                      >
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </div>
-                    <button mat-button (click)="addBackgroundColor(item)">
-                      <mat-icon>add</mat-icon> Add Background Color
-                    </button>
-                  </div>
-
-                  <!-- Colors -->
-                  <h4>Colors</h4>
-                  <div formArrayName="color">
-                    <div
-                      *ngFor="
-                        let control of getChartColors(item).controls;
-                        let j = index
-                      "
-                    >
-                      <mat-form-field appearance="fill">
-                        <mat-label>Color {{ j + 1 }}</mat-label>
-                        <input
-                          matInput
-                          type="color"
-                          [formControl]="
-                            getFormControlFromArray(getChartColors(item), j)
-                          "
-                        />
-                      </mat-form-field>
-                      <button
-                        mat-icon-button
-                        color="warn"
-                        (click)="removeColor(item, j)"
-                        *ngIf="getChartColors(item).controls.length > 0"
-                      >
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </div>
-                    <button mat-button (click)="addColor(item)">
-                      <mat-icon>add</mat-icon> Add Color
-                    </button>
-                  </div>
-
-                  <!-- Other properties -->
-                  <mat-form-field appearance="fill">
-                    <mat-label>Border Radius</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      formControlName="borderRadius"
-                    />
-                  </mat-form-field>
-
-                  <mat-form-field appearance="fill">
-                    <mat-label>Bar Thickness</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      formControlName="barThickness"
-                    />
-                  </mat-form-field>
-
-                  <button
-                    mat-icon-button
-                    color="warn"
-                    (click)="removeDatasetItem('dataset', i)"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </mat-card>
-              </mat-expansion-panel>
-            </div>
-          </div>
-          <button mat-button (click)="addDatasetItem('dataset')">
-            <mat-icon>add</mat-icon> Add Chart Dataset
-          </button>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'PROPERTY'">
-        <div formGroupName="data">
-          <h3>Property</h3>
-          <mat-form-field appearance="fill">
-            <mat-label>Key</mat-label>
-            <input matInput formControlName="key" />
-          </mat-form-field>
-          <mat-form-field appearance="fill">
-            <mat-label>Value</mat-label>
-            <input matInput formControlName="value" />
-          </mat-form-field>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'TABLE'">
-        <div formGroupName="data">
-          <!-- Headers Narrative -->
-          <h3>Headers</h3>
-          <mat-accordion *ngIf="isNarrativeField('headers')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Headers Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('headers')?.title"
-                  (input)="onNarrativeInput($event, 'headers', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('headers')?.traitName"
-                  (input)="onNarrativeInput($event, 'headers', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('headers')?.traitValue"
-                  (input)="onNarrativeInput($event, 'headers', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <!-- Header Narrative -->
-          <h3>Header</h3>
-          <mat-accordion *ngIf="isNarrativeField('header')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Header Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.title"
-                  (input)="onNarrativeInput($event, 'header', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.traitName"
-                  (input)="onNarrativeInput($event, 'header', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.traitValue"
-                  (input)="onNarrativeInput($event, 'header', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <!-- Definition -->
-          <h3>Definition</h3>
-          <mat-form-field appearance="fill">
-            <mat-label>Definition</mat-label>
-            <input matInput formControlName="definition" />
-          </mat-form-field>
-
-          <!-- Table Rows -->
-          <h3>Table Rows</h3>
-          <div formArrayName="dataset">
-            <div
-              *ngFor="let row of getDatasetControls(); let i = index"
-              [formGroupName]="i"
-            >
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>Row {{ i + 1 }}</mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Label</mat-label>
-                  <input matInput formControlName="Label" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Score</mat-label>
-                  <input matInput type="number" formControlName="Score" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Color</mat-label>
-                  <input matInput type="color" formControlName="color" />
-                </mat-form-field>
-
-                <button
-                  mat-icon-button
-                  color="warn"
-                  (click)="removeDatasetItem('dataset', i)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </mat-expansion-panel>
-            </div>
-          </div>
-          <button mat-button (click)="addDatasetItem('dataset')">
-            <mat-icon>add</mat-icon> Add Row
-          </button>
-
-          <!-- Chips Section -->
-          <h3>Chips</h3>
-          <div formArrayName="chips">
-            <div
-              *ngFor="let chip of getChipControls(); let i = index"
-              [formGroupName]="i"
-            >
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>Chip {{ i + 1 }}</mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <!-- Text Narrative for each chip -->
-                <h4>Text</h4>
-                <mat-accordion
-                  *ngIf="isNarrativeFieldFromControl(chip.get('text'))"
-                >
-                  <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                      <mat-panel-title>Text Narrative</mat-panel-title>
-                    </mat-expansion-panel-header>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Title</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(chip.get('text'))?.title
-                        "
-                        (input)="
-                          onChipNarrativeInput($event, i, 'text', 'title')
-                        "
-                      />
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Trait Name</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(chip.get('text'))
-                            ?.traitName
-                        "
-                        (input)="
-                          onChipNarrativeInput($event, i, 'text', 'traitName')
-                        "
-                      />
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Trait Value (Optional)</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(chip.get('text'))
-                            ?.traitValue
-                        "
-                        (input)="
-                          onChipNarrativeInput($event, i, 'text', 'traitValue')
-                        "
-                      />
-                    </mat-form-field>
-                  </mat-expansion-panel>
-                </mat-accordion>
-
-                <!-- Other chip fields -->
-                <mat-form-field appearance="fill">
-                  <mat-label>Icon</mat-label>
-                  <input matInput formControlName="icon" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Color</mat-label>
-                  <input matInput type="color" formControlName="color" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Background Color</mat-label>
-                  <input
-                    matInput
-                    type="color"
-                    formControlName="backgroundColor"
-                  />
-                </mat-form-field>
-
-                <button
-                  mat-icon-button
-                  color="warn"
-                  (click)="removeChipItem(i)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </mat-expansion-panel>
-            </div>
-          </div>
-          <button mat-button (click)="addChipItem()">
-            <mat-icon>add</mat-icon> Add Chip
-          </button>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'LIST'">
-        <div formGroupName="data">
-          <h3>List Items</h3>
-          <div formArrayName="dataset">
-            <div
-              *ngFor="let item of getDatasetControls(); let i = index"
-              [formGroupName]="i"
-            >
-              <mat-form-field appearance="fill">
-                <mat-label>Item</mat-label>
-                <input matInput formControlName="item" />
-              </mat-form-field>
-              <button
-                mat-icon-button
-                color="warn"
-                (click)="removeDatasetItem('dataset', i)"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
-          </div>
-          <button mat-button (click)="addDatasetItem('dataset')">
-            Add List Item
-          </button>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'CHIP'">
-        <div formGroupName="data">
-          <h3>Header</h3>
-          <mat-accordion *ngIf="isNarrativeField('header')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Header Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.title"
-                  (input)="onNarrativeInput($event, 'header', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.traitName"
-                  (input)="onNarrativeInput($event, 'header', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('header')?.traitValue"
-                  (input)="onNarrativeInput($event, 'header', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <h3>Definition</h3>
-          <mat-accordion *ngIf="isNarrativeField('definition')">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Definition Narrative</mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Title</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.title"
-                  (input)="onNarrativeInput($event, 'definition', 'title')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Name</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.traitName"
-                  (input)="onNarrativeInput($event, 'definition', 'traitName')"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Trait Value (Optional)</mat-label>
-                <input
-                  matInput
-                  [value]="getNarrativeFields('definition')?.traitValue"
-                  (input)="onNarrativeInput($event, 'definition', 'traitValue')"
-                />
-              </mat-form-field>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <h3>Chips</h3>
-          <div formArrayName="dataset">
-            <div
-              *ngFor="let chip of getDatasetControls(); let i = index"
-              [formGroupName]="i"
-            >
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>Chip {{ i + 1 }}</mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <!-- Text Narrative for each chip -->
-                <h4>Text</h4>
-                <mat-accordion
-                  *ngIf="isNarrativeFieldFromControl(chip.get('text'))"
-                >
-                  <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                      <mat-panel-title>Text Narrative</mat-panel-title>
-                    </mat-expansion-panel-header>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Title</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(chip.get('text'))?.title
-                        "
-                        (input)="
-                          onDatasetNarrativeInput($event, i, 'text', 'title')
-                        "
-                      />
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Trait Name</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(chip.get('text'))
-                            ?.traitName
-                        "
-                        (input)="
-                          onDatasetNarrativeInput(
-                            $event,
-                            i,
-                            'text',
-                            'traitName'
-                          )
-                        "
-                      />
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                      <mat-label>Trait Value (Optional)</mat-label>
-                      <input
-                        matInput
-                        [value]="
-                          getNarrativeFieldsFromControl(chip.get('text'))
-                            ?.traitValue
-                        "
-                        (input)="
-                          onDatasetNarrativeInput(
-                            $event,
-                            i,
-                            'text',
-                            'traitValue'
-                          )
-                        "
-                      />
-                    </mat-form-field>
-                  </mat-expansion-panel>
-                </mat-accordion>
-
-                <!-- Other chip fields -->
-                <mat-form-field appearance="fill">
-                  <mat-label>Icon</mat-label>
-                  <input matInput formControlName="icon" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Color</mat-label>
-                  <input matInput type="color" formControlName="color" />
-                </mat-form-field>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Background Color</mat-label>
-                  <input
-                    matInput
-                    type="color"
-                    formControlName="backgroundColor"
-                  />
-                </mat-form-field>
-
-                <button
-                  mat-icon-button
-                  color="warn"
-                  (click)="removeDatasetItem('dataset', i)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </mat-expansion-panel>
-            </div>
-          </div>
-          <button mat-button (click)="addDatasetItem('dataset')">
-            <mat-icon>add</mat-icon> Add Chip
-          </button>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'QUESTION'">
-        <div formGroupName="data">
-          <h3>Question</h3>
-          <mat-form-field appearance="fill">
-            <mat-label>Question Text</mat-label>
-            <input matInput formControlName="questionText" />
-          </mat-form-field>
-          <div formArrayName="dataset">
-            <div
-              *ngFor="let answer of getDatasetControls(); let i = index"
-              [formGroupName]="i"
-            >
-              <mat-form-field appearance="fill">
-                <mat-label>Answer</mat-label>
-                <input matInput formControlName="answer" />
-              </mat-form-field>
-              <button
-                mat-icon-button
-                color="warn"
-                (click)="removeDatasetItem('dataset', i)"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
-          </div>
-          <button mat-button (click)="addDatasetItem('dataset')">
-            Add Answer
-          </button>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'RANGE'">
-        <div formGroupName="data">
-          <h3>Range</h3>
-          <mat-form-field appearance="fill">
-            <mat-label>Min</mat-label>
-            <input matInput type="number" formControlName="min" />
-          </mat-form-field>
-          <mat-form-field appearance="fill">
-            <mat-label>Max</mat-label>
-            <input matInput type="number" formControlName="max" />
-          </mat-form-field>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'PDF_BREAK'">
-        <div formGroupName="data">
-          <p>This component inserts a page break in PDF.</p>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'IMAGE'">
-        <div formGroupName="data">
-          <h3>Image</h3>
-          <mat-form-field appearance="fill">
-            <mat-label>Image URL</mat-label>
-            <input matInput formControlName="url" />
-          </mat-form-field>
-          <mat-form-field appearance="fill">
-            <mat-label>Alt Text</mat-label>
-            <input matInput formControlName="alt" />
-          </mat-form-field>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'BAR_INDICATOR'">
-        <div formGroupName="data">
-          <h3>Bar Indicator</h3>
-          <mat-form-field appearance="fill">
-            <mat-label>Label</mat-label>
-            <input matInput formControlName="label" />
-          </mat-form-field>
-          <mat-form-field appearance="fill">
-            <mat-label>Value</mat-label>
-            <input matInput type="number" formControlName="value" />
-          </mat-form-field>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'PANEL'">
-        <div formGroupName="data">
-          <h3>Panel</h3>
-          <mat-form-field appearance="fill">
-            <mat-label>Title</mat-label>
-            <input matInput formControlName="title" />
-          </mat-form-field>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'PANEL_LAYOUT'">
-        <div formGroupName="data">
-          <h3>Panel Layout</h3>
-          <mat-form-field appearance="fill">
-            <mat-label>Layout Type</mat-label>
-            <input matInput formControlName="layoutType" />
-          </mat-form-field>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'WRAPPED_ITEMS'">
-        <div formGroupName="data">
-          <h3>Wrapped Items</h3>
-          <div formArrayName="dataset">
-            <div
-              *ngFor="let item of getDatasetControls(); let i = index"
-              [formGroupName]="i"
-            >
-              <mat-form-field appearance="fill">
-                <mat-label>Item Title</mat-label>
-                <input matInput formControlName="title" />
-              </mat-form-field>
-              <mat-form-field appearance="fill">
-                <mat-label>Item Description</mat-label>
-                <input matInput formControlName="description" />
-              </mat-form-field>
-              <button
-                mat-icon-button
-                color="warn"
-                (click)="removeDatasetItem('dataset', i)"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
-          </div>
-          <button mat-button (click)="addDatasetItem('dataset')">
-            Add Wrapped Item
-          </button>
-        </div>
-      </ng-container>
+      <app-chart-data
+        *ngSwitchCase="'CHART'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [isNarrativeFieldFromControl]="isNarrativeFieldFromControl.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-chart-data>
+
+      <!-- PROPERTY -->
+      <app-property-data
+        *ngSwitchCase="'PROPERTY'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [isNarrativeFieldFromControl]="isNarrativeFieldFromControl.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-property-data>
+
+      <!-- TABLE -->
+      <app-table-data
+        *ngSwitchCase="'TABLE'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-table-data>
+
+      <!-- LIST -->
+      <app-list-data
+        *ngSwitchCase="'LIST'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-list-data>
+
+      <!-- CHIP -->
+      <app-chip-data
+        *ngSwitchCase="'CHIP'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-chip-data>
+
+      <!-- QUESTION -->
+      <app-question-data
+        *ngSwitchCase="'QUESTION'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-question-data>
+
+      <!-- RANGE -->
+      <app-range-data
+        *ngSwitchCase="'RANGE'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-range-data>
+
+      <!-- PDF_BREAK -->
+      <!-- <app-pdf-break-dialog
+        *ngSwitchCase="'PDF_BREAK'"
+        [form]="form"
+        [data]="data"
+      ></app-pdf-break-dialog> -->
+
+      <!-- IMAGE -->
+      <app-image-data
+        *ngSwitchCase="'IMAGE'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-image-data>
+
+      <!-- BAR_INDICATOR -->
+      <app-bar-indicator-data
+        *ngSwitchCase="'BAR_INDICATOR'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-bar-indicator-data>
+
+      <!-- PANEL -->
+      <app-panel-data
+        *ngSwitchCase="'PANEL'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-panel-data>
+
+      <!-- PANEL_LAYOUT -->
+      <!-- <app-panel-layout-dialog
+        *ngSwitchCase="'PANEL_LAYOUT'"
+        [form]="form"
+        [data]="data"
+      ></app-panel-layout-dialog> -->
+
+      <!-- WRAPPED_ITEMS -->
+      <!-- <app-wrapped-items-dialog
+        *ngSwitchCase="'WRAPPED_ITEMS'"
+        [form]="form"
+        [data]="data"
+      ></app-wrapped-items-dialog> -->
 
       <!-- Default -->
       <ng-container *ngSwitchDefault>
