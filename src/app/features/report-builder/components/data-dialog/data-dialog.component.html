@@ -194,16 +194,14 @@
         *ngSwitchCase="'PANEL'"
         [form]="form"
         [data]="data"
-        [isNarrativeField]="isNarrativeField.bind(this)"
-        [getNarrativeFields]="getNarrativeFields.bind(this)"
-        [onNarrativeInput]="onNarrativeInput.bind(this)"
-        [getNarrativeFieldsFromControl]="
-          getNarrativeFieldsFromControl.bind(this)
-        "
-        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
-        [removeDatasetItem]="removeDatasetItem.bind(this)"
-        [addDatasetItem]="addDatasetItem.bind(this)"
       ></app-panel-data>
+
+      <app-chart-table-indicator-data
+        *ngSwitchCase="'CHART_TABLE_INDICATOR'"
+        [form]="form"
+        [data]="data"
+      >
+      </app-chart-table-indicator-data>
 
       <!-- PANEL_LAYOUT -->
       <!-- <app-panel-layout-dialog

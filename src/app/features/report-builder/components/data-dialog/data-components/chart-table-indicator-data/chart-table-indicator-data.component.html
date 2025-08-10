@@ -1,1 +1,1389 @@
-<p>chart-table-indicator-data works!</p>
+<div [formGroup]="form">
+  <div formGroupName="data">
+    <div formArrayName="dataset">
+      <div
+        *ngFor="let item of getDatasetControls(); let i = index"
+        [formGroupName]="i"
+      >
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Dataset {{ i + 1 }}</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-card>
+            <!-- Chart Section -->
+            <h3>Chart</h3>
+            <div [formGroup]="getChartControls()[i]">
+              <div formGroupName="data">
+                <!-- Header Narrative -->
+                <mat-accordion
+                  *ngIf="
+                    isNarrativeField(
+                      getSafeControl(getChartControls()[i], 'data.header')
+                    )
+                  "
+                >
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>Header Narrative</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Title</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(getChartControls()[i], 'data.header')
+                          ).title
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.header'
+                            ),
+                            'title'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Name</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(getChartControls()[i], 'data.header')
+                          ).traitName
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.header'
+                            ),
+                            'traitName'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Value</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(getChartControls()[i], 'data.header')
+                          ).traitValue
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.header'
+                            ),
+                            'traitValue'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Definition Narrative -->
+                <mat-accordion
+                  *ngIf="
+                    isNarrativeField(
+                      getSafeControl(getChartControls()[i], 'data.definition')
+                    )
+                  "
+                >
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>Definition Narrative</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Title</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.definition'
+                            )
+                          ).title
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.definition'
+                            ),
+                            'title'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Name</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.definition'
+                            )
+                          ).traitName
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.definition'
+                            ),
+                            'traitName'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Value</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.definition'
+                            )
+                          ).traitValue
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.definition'
+                            ),
+                            'traitValue'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Labels Narrative -->
+                <mat-accordion
+                  *ngIf="
+                    isNarrativeField(
+                      getSafeControl(getChartControls()[i], 'data.labels')
+                    )
+                  "
+                >
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>Labels Narrative</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Title</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(getChartControls()[i], 'data.labels')
+                          ).title
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.labels'
+                            ),
+                            'title'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Name</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(getChartControls()[i], 'data.labels')
+                          ).traitName
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.labels'
+                            ),
+                            'traitName'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Value</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(getChartControls()[i], 'data.labels')
+                          ).traitValue
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getChartControls()[i],
+                              'data.labels'
+                            ),
+                            'traitValue'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Chart Dataset -->
+                <h4>Chart Data</h4>
+                <div formArrayName="dataset">
+                  <div
+                    *ngFor="
+                      let datasetItem of getChartDataPoints(
+                        getChartControls()[i]
+                      ).controls;
+                      let j = index
+                    "
+                    [formGroupName]="j"
+                  >
+                    <div formArrayName="data">
+                      <div
+                        *ngFor="
+                          let dataPoint of getSafeDataPoints(datasetItem)
+                            .controls;
+                          let k = index
+                        "
+                        [formGroupName]="k"
+                      >
+                        <mat-form-field appearance="fill">
+                          <mat-label>Data Point {{ k + 1 }}</mat-label>
+                          <input
+                            matInput
+                            type="number"
+                            [formControl]="getAsFormControl(dataPoint)"
+                          />
+                        </mat-form-field>
+                        <button
+                          mat-icon-button
+                          color="warn"
+                          (click)="
+                            removeChartDataPoint(getChartControls()[i], k)
+                          "
+                          *ngIf="
+                            getSafeDataPoints(datasetItem).controls.length > 1
+                          "
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                      <button
+                        mat-button
+                        (click)="addChartDataPoint(getChartControls()[i])"
+                      >
+                        <mat-icon>add</mat-icon> Add Data Point
+                      </button>
+                    </div>
+
+                    <!-- Background Colors -->
+                    <h5>Background Colors</h5>
+                    <div formArrayName="backgroundColor">
+                      <div
+                        *ngFor="
+                          let bgColor of getSafeBackgroundColors(datasetItem)
+                            .controls;
+                          let l = index
+                        "
+                        [formGroupName]="l"
+                      >
+                        <mat-form-field appearance="fill">
+                          <mat-label>Color {{ l + 1 }}</mat-label>
+                          <input
+                            matInput
+                            type="color"
+                            [formControl]="getAsFormControl(bgColor)"
+                          />
+                        </mat-form-field>
+                        <button
+                          mat-icon-button
+                          color="warn"
+                          (click)="
+                            getSafeBackgroundColors(datasetItem).removeAt(l)
+                          "
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                      <button
+                        mat-button
+                        (click)="
+                          getSafeBackgroundColors(datasetItem).push(
+                            fb.control('#ffffff')
+                          )
+                        "
+                      >
+                        <mat-icon>add</mat-icon> Add Background Color
+                      </button>
+                    </div>
+
+                    <!-- Colors -->
+                    <h5>Colors</h5>
+                    <div formArrayName="color">
+                      <div
+                        *ngFor="
+                          let color of getSafeArray(datasetItem, 'color')
+                            .controls;
+                          let m = index
+                        "
+                        [formGroupName]="m"
+                      >
+                        <mat-form-field appearance="fill">
+                          <mat-label>Color {{ m + 1 }}</mat-label>
+                          <input
+                            matInput
+                            type="color"
+                            [formControl]="getAsFormControl(color)"
+                          />
+                        </mat-form-field>
+                        <button
+                          mat-icon-button
+                          color="warn"
+                          (click)="
+                            getSafeArray(datasetItem, 'color').removeAt(m)
+                          "
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                      <button
+                        mat-button
+                        (click)="
+                          getSafeArray(datasetItem, 'color').push(
+                            fb.control('#000000')
+                          )
+                        "
+                      >
+                        <mat-icon>add</mat-icon> Add Color
+                      </button>
+                    </div>
+
+                    <!-- Border Radius -->
+                    <mat-form-field appearance="fill">
+                      <mat-label>Border Radius</mat-label>
+                      <input
+                        matInput
+                        type="number"
+                        formControlName="borderRadius"
+                      />
+                    </mat-form-field>
+
+                    <!-- Bar Thickness -->
+                    <mat-form-field appearance="fill">
+                      <mat-label>Bar Thickness</mat-label>
+                      <input
+                        matInput
+                        type="number"
+                        formControlName="barThickness"
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table Section -->
+            <h3>Table</h3>
+            <div [formGroup]="getTableControls()[i]">
+              <div formGroupName="data">
+                <!-- Headers Narrative -->
+                <mat-accordion
+                  *ngIf="
+                    isNarrativeField(
+                      getSafeControl(getTableControls()[i], 'data.headers')
+                    )
+                  "
+                >
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>Headers Narrative</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Title</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.headers'
+                            )
+                          ).title
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.headers'
+                            ),
+                            'title'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Name</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.headers'
+                            )
+                          ).traitName
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.headers'
+                            ),
+                            'traitName'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Value</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.headers'
+                            )
+                          ).traitValue
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.headers'
+                            ),
+                            'traitValue'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Header Narrative -->
+                <mat-accordion
+                  *ngIf="
+                    isNarrativeField(
+                      getSafeControl(getTableControls()[i], 'data.header')
+                    )
+                  "
+                >
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>Header Narrative</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Title</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(getTableControls()[i], 'data.header')
+                          ).title
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.header'
+                            ),
+                            'title'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Name</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(getTableControls()[i], 'data.header')
+                          ).traitName
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.header'
+                            ),
+                            'traitName'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Value</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(getTableControls()[i], 'data.header')
+                          ).traitValue
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.header'
+                            ),
+                            'traitValue'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Definition Narrative -->
+                <mat-accordion
+                  *ngIf="
+                    isNarrativeField(
+                      getSafeControl(getTableControls()[i], 'data.definition')
+                    )
+                  "
+                >
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>Definition Narrative</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Title</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.definition'
+                            )
+                          ).title
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.definition'
+                            ),
+                            'title'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Name</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.definition'
+                            )
+                          ).traitName
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.definition'
+                            ),
+                            'traitName'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Value</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.definition'
+                            )
+                          ).traitValue
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getTableControls()[i],
+                              'data.definition'
+                            ),
+                            'traitValue'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Table Dataset -->
+                <h4>Table Data</h4>
+                <div formArrayName="dataset">
+                  <div
+                    *ngFor="
+                      let row of getTableRows(getTableControls()[i]).controls;
+                      let j = index
+                    "
+                    [formGroupName]="j"
+                  >
+                    <mat-form-field appearance="fill">
+                      <mat-label>Label</mat-label>
+                      <input matInput formControlName="Label" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Score</mat-label>
+                      <input matInput type="number" formControlName="Score" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Color</mat-label>
+                      <input matInput type="color" formControlName="color" />
+                    </mat-form-field>
+
+                    <button
+                      mat-icon-button
+                      color="warn"
+                      (click)="removeTableRow(getTableControls()[i], j)"
+                      *ngIf="
+                        getTableRows(getTableControls()[i]).controls.length > 1
+                      "
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                  <button
+                    mat-button
+                    (click)="addTableRow(getTableControls()[i])"
+                  >
+                    <mat-icon>add</mat-icon> Add Table Row
+                  </button>
+                </div>
+
+                <!-- Chips Section -->
+                <h4>Chips</h4>
+                <div formArrayName="chips">
+                  <div
+                    *ngFor="
+                      let chip of getSafeArray(
+                        getTableControls()[i].get('data')!,
+                        'chips'
+                      ).controls;
+                      let k = index
+                    "
+                    [formGroupName]="k"
+                  >
+                    <!-- Text Narrative -->
+                    <mat-accordion *ngIf="isNarrativeField(chip.get('text'))">
+                      <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>Text Narrative</mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <mat-form-field appearance="fill">
+                          <mat-label>Title</mat-label>
+                          <input
+                            matInput
+                            [value]="
+                              getSafeNarrativeFields(chip.get('text')).title
+                            "
+                            (input)="
+                              onNarrativeInput(
+                                $event,
+                                chip.get('text'),
+                                'title'
+                              )
+                            "
+                          />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill">
+                          <mat-label>Trait Name</mat-label>
+                          <input
+                            matInput
+                            [value]="
+                              getSafeNarrativeFields(chip.get('text')).traitName
+                            "
+                            (input)="
+                              onNarrativeInput(
+                                $event,
+                                chip.get('text'),
+                                'traitName'
+                              )
+                            "
+                          />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill">
+                          <mat-label>Trait Value</mat-label>
+                          <input
+                            matInput
+                            [value]="
+                              getSafeNarrativeFields(chip.get('text'))
+                                .traitValue
+                            "
+                            (input)="
+                              onNarrativeInput(
+                                $event,
+                                chip.get('text'),
+                                'traitValue'
+                              )
+                            "
+                          />
+                        </mat-form-field>
+                      </mat-expansion-panel>
+                    </mat-accordion>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Icon</mat-label>
+                      <input matInput formControlName="icon" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Background Color</mat-label>
+                      <input
+                        matInput
+                        type="color"
+                        formControlName="backgroundColor"
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Text Color</mat-label>
+                      <input matInput type="color" formControlName="color" />
+                    </mat-form-field>
+
+                    <button
+                      mat-icon-button
+                      color="warn"
+                      (click)="
+                        getSafeArray(
+                          getTableControls()[i].get('data')!,
+                          'chips'
+                        ).removeAt(k)
+                      "
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                  <button
+                    mat-button
+                    (click)="
+                      getSafeArray(
+                        getTableControls()[i].get('data')!,
+                        'chips'
+                      ).push(formService.createChipDataset())
+                    "
+                  >
+                    <mat-icon>add</mat-icon> Add Chip
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Indicator Section -->
+            <h3>Indicator</h3>
+            <div [formGroup]="getIndicatorControls()[i]">
+              <div formGroupName="data">
+                <!-- Header Narrative -->
+                <mat-accordion
+                  *ngIf="
+                    isNarrativeField(
+                      getSafeControl(getIndicatorControls()[i], 'data.header')
+                    )
+                  "
+                >
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>Header Narrative</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Title</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.header'
+                            )
+                          ).title
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.header'
+                            ),
+                            'title'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Name</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.header'
+                            )
+                          ).traitName
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.header'
+                            ),
+                            'traitName'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Value</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.header'
+                            )
+                          ).traitValue
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.header'
+                            ),
+                            'traitValue'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Definition Narrative -->
+                <mat-accordion
+                  *ngIf="
+                    isNarrativeField(
+                      getSafeControl(
+                        getIndicatorControls()[i],
+                        'data.definition'
+                      )
+                    )
+                  "
+                >
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>Definition Narrative</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Title</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.definition'
+                            )
+                          ).title
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.definition'
+                            ),
+                            'title'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Name</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.definition'
+                            )
+                          ).traitName
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.definition'
+                            ),
+                            'traitName'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Value</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.definition'
+                            )
+                          ).traitValue
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.definition'
+                            ),
+                            'traitValue'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Left Label Narrative -->
+                <mat-accordion
+                  *ngIf="
+                    isNarrativeField(
+                      getSafeControl(
+                        getIndicatorControls()[i],
+                        'data.leftLabel'
+                      )
+                    )
+                  "
+                >
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>Left Label Narrative</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Title</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.leftLabel'
+                            )
+                          ).title
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.leftLabel'
+                            ),
+                            'title'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Name</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.leftLabel'
+                            )
+                          ).traitName
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.leftLabel'
+                            ),
+                            'traitName'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Value</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.leftLabel'
+                            )
+                          ).traitValue
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.leftLabel'
+                            ),
+                            'traitValue'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Right Label Narrative -->
+                <mat-accordion
+                  *ngIf="
+                    isNarrativeField(
+                      getSafeControl(
+                        getIndicatorControls()[i],
+                        'data.rightLabel'
+                      )
+                    )
+                  "
+                >
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>Right Label Narrative</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Title</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.rightLabel'
+                            )
+                          ).title
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.rightLabel'
+                            ),
+                            'title'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Name</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.rightLabel'
+                            )
+                          ).traitName
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.rightLabel'
+                            ),
+                            'traitName'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Trait Value</mat-label>
+                      <input
+                        matInput
+                        [value]="
+                          getSafeNarrativeFields(
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.rightLabel'
+                            )
+                          ).traitValue
+                        "
+                        (input)="
+                          onNarrativeInput(
+                            $event,
+                            getSafeControl(
+                              getIndicatorControls()[i],
+                              'data.rightLabel'
+                            ),
+                            'traitValue'
+                          )
+                        "
+                      />
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Indicator Dataset -->
+                <h4>Indicator Data</h4>
+                <div formArrayName="dataset">
+                  <div
+                    *ngFor="
+                      let indicatorItem of getIndicatorDataset(
+                        getIndicatorControls()[i]
+                      ).controls;
+                      let j = index
+                    "
+                    [formGroupName]="j"
+                  >
+                    <!-- Name Narrative -->
+                    <mat-accordion
+                      *ngIf="isNarrativeField(indicatorItem.get('name'))"
+                    >
+                      <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>Name Narrative</mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <mat-form-field appearance="fill">
+                          <mat-label>Title</mat-label>
+                          <input
+                            matInput
+                            [value]="
+                              getSafeNarrativeFields(indicatorItem.get('name'))
+                                .title
+                            "
+                            (input)="
+                              onNarrativeInput(
+                                $event,
+                                indicatorItem.get('name'),
+                                'title'
+                              )
+                            "
+                          />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill">
+                          <mat-label>Trait Name</mat-label>
+                          <input
+                            matInput
+                            [value]="
+                              getSafeNarrativeFields(indicatorItem.get('name'))
+                                .traitName
+                            "
+                            (input)="
+                              onNarrativeInput(
+                                $event,
+                                indicatorItem.get('name'),
+                                'traitName'
+                              )
+                            "
+                          />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill">
+                          <mat-label>Trait Value</mat-label>
+                          <input
+                            matInput
+                            [value]="
+                              getSafeNarrativeFields(indicatorItem.get('name'))
+                                .traitValue
+                            "
+                            (input)="
+                              onNarrativeInput(
+                                $event,
+                                indicatorItem.get('name'),
+                                'traitValue'
+                              )
+                            "
+                          />
+                        </mat-form-field>
+                      </mat-expansion-panel>
+                    </mat-accordion>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Dataset ID</mat-label>
+                      <input
+                        matInput
+                        type="number"
+                        formControlName="datasetId"
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Scoring Rate</mat-label>
+                      <input matInput formControlName="scoringRate" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Value From</mat-label>
+                      <input
+                        matInput
+                        type="number"
+                        formControlName="valueFrom"
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Value To</mat-label>
+                      <input matInput type="number" formControlName="valueTo" />
+                    </mat-form-field>
+
+                    <mat-checkbox formControlName="isSelected"
+                      >Is Selected</mat-checkbox
+                    >
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Selected Value</mat-label>
+                      <input
+                        matInput
+                        type="number"
+                        formControlName="selectedValue"
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Background Color</mat-label>
+                      <input
+                        matInput
+                        type="color"
+                        formControlName="backgroundColor"
+                      />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Text Color</mat-label>
+                      <input matInput type="color" formControlName="color" />
+                    </mat-form-field>
+
+                    <button
+                      mat-icon-button
+                      color="warn"
+                      (click)="
+                        removeIndicatorItem(getIndicatorControls()[i], j)
+                      "
+                      *ngIf="
+                        getIndicatorDataset(getIndicatorControls()[i]).controls
+                          .length > 1
+                      "
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                  <button
+                    mat-button
+                    (click)="addIndicatorItem(getIndicatorControls()[i])"
+                  >
+                    <mat-icon>add</mat-icon> Add Indicator Item
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-card></mat-expansion-panel
+        >
+      </div>
+    </div>
+  </div>
+</div>

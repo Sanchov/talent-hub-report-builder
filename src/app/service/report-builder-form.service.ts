@@ -27,7 +27,7 @@ interface WithNarrativeMetadata {
   providedIn: 'root',
 })
 export class ReportBuilderFormService {
-  constructor(private fb: FormBuilder) {}
+  constructor(public fb: FormBuilder) {}
   private narrativeService = inject(NarrativeService);
 
   // ==================== PUBLIC API ====================
@@ -127,26 +127,27 @@ export class ReportBuilderFormService {
     });
   }
 
-  createComponent(type: ComponentType): FormGroup {
+  createComponent(type: ComponentType, existingData?: any): FormGroup {
     return this.fb.group({
       type,
-      data: this.createComponentData(type),
-      options: this.createComponentOptions(type),
+      data: this.createComponentData(type, existingData?.data),
+      options: this.createComponentOptions(type, existingData?.options),
     });
   }
 
-  createComponentOptions(type: ComponentType): FormGroup {
-    const creators: Record<ComponentType, () => FormGroup> = {
-      CARD: () => this.createCardOptions({}),
-      INDICATOR: () => this.createIndicatorOptions({}),
-      CHART: () => this.createChartOptions({}),
-      TABLE: () => this.createTableOptions({}),
-      PROPERTY: () => this.createPropertyOptions({}),
-      QUESTION: () => this.createQuestionOptions({}),
-      LIST: () => this.createListOptions({}),
-      PANEL: () => this.createPanelOptions({}),
-      CHIP: () => this.createChipOptions({}),
-      CHART_TABLE_INDICATOR: () => this.createChartTableIndicatorOptions({}),
+  createComponentOptions(type: ComponentType, options: any = {}): FormGroup {
+    const creators: Record<ComponentType, (opts: any) => FormGroup> = {
+      CARD: (opts) => this.createCardOptions(opts),
+      INDICATOR: (opts) => this.createIndicatorOptions(opts),
+      CHART: (opts) => this.createChartOptions(opts),
+      TABLE: (opts) => this.createTableOptions(opts),
+      PROPERTY: (opts) => this.createPropertyOptions(opts),
+      QUESTION: (opts) => this.createQuestionOptions(opts),
+      LIST: (opts) => this.createListOptions(opts),
+      PANEL: (opts) => this.createPanelOptions(opts),
+      CHIP: (opts) => this.createChipOptions(opts),
+      CHART_TABLE_INDICATOR: (opts) =>
+        this.createChartTableIndicatorOptions(opts),
       BAR_INDICATOR: () => this.fb.group({}),
       WRAPPED_ITEMS: () => this.fb.group({}),
       IMAGE: () => this.fb.group({}),
@@ -154,7 +155,7 @@ export class ReportBuilderFormService {
       PDF_BREAK: () => this.fb.group({}),
       PANEL_LAYOUT: () => this.fb.group({}),
     };
-    return creators[type]();
+    return creators[type](options);
   }
 
   createOptionsForm(type: ComponentType, options: any = {}): FormGroup {
@@ -187,7 +188,10 @@ export class ReportBuilderFormService {
   }
 
   // ==================== COMPONENT DATA CREATORS ====================
-  createComponentData(type: ComponentType): FormGroup & WithNarrativeMetadata {
+  createComponentData(
+    type: ComponentType,
+    existingData?: any
+  ): FormGroup & WithNarrativeMetadata {
     const creators: Record<
       ComponentType,
       () => FormGroup & WithNarrativeMetadata
@@ -198,7 +202,7 @@ export class ReportBuilderFormService {
       TABLE: () => this.createTableData(),
       CHIP: () => this.createChipData(),
       PANEL: () => this.createPanelData(),
-      PANEL_LAYOUT: () => this.createPanelLayoutData(),
+      PANEL_LAYOUT: () => this.createPanelLayoutData(existingData),
       BAR_INDICATOR: () => this.createBarIndicatorData(),
       WRAPPED_ITEMS: () => this.createWrappedItemsData(),
       PDF_BREAK: () => this.createPdfBreakData(),
@@ -210,6 +214,47 @@ export class ReportBuilderFormService {
       RANGE: () => this.createRangeData(),
     };
     return creators[type]();
+  }
+  private createDatasetForType(type: ComponentType, data: any): FormGroup {
+    switch (type) {
+      case 'PANEL':
+        return this.createPanelDataset(data);
+      case 'CARD':
+        return this.createCardDataset(data);
+
+      default:
+        return this.fb.group(data);
+    }
+  }
+  private createNestedComponentWithData(
+    type: ComponentType,
+    existingComponentData?: any,
+    existingDataset?: any
+  ): FormGroup {
+    const component = this.createComponent(type, existingComponentData);
+
+    // Handle dataset initialization if it exists
+    if (existingDataset && component.get('data.dataset')) {
+      const datasetArray = component.get('data.dataset') as FormArray;
+      datasetArray.clear();
+
+      if (Array.isArray(existingDataset)) {
+        existingDataset.forEach((datasetItem) => {
+          datasetArray.push(this.createDatasetForType(type, datasetItem));
+        });
+      } else if (existingDataset) {
+        datasetArray.push(this.createDatasetForType(type, existingDataset));
+      }
+    }
+
+    return component;
+  }
+  createNestedComponent(type: ComponentType): FormGroup {
+    return this.fb.group({
+      type,
+      data: this.createComponentData(type),
+      options: this.createComponentOptions(type),
+    });
   }
 
   createCardData(): FormGroup & WithNarrativeMetadata {
@@ -258,13 +303,14 @@ export class ReportBuilderFormService {
     const group = this.fb.group({
       headers: [this.narrativeService.format('', '')],
       header: this.narrativeService.format('', ''),
-      definition: '',
+      definition: this.narrativeService.format('', ''),
       dataset: this.fb.array([this.createTableRow()]),
       chips: this.fb.array([this.createChipDataset()]),
     }) as FormGroup & WithNarrativeMetadata;
 
     this.markAsNarrative(group.get('headers')!);
     this.markAsNarrative(group.get('header')!);
+    this.markAsNarrative(group.get('definition'));
     return group;
   }
 
@@ -287,9 +333,11 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  createPanelLayoutData(): FormGroup & WithNarrativeMetadata {
+  createPanelLayoutData(existingData?: any): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      dataset: this.fb.array([this.createPanelLayoutDataset()]),
+      dataset: this.fb.array([
+        this.createPanelLayoutDataset(existingData?.dataset?.[0]),
+      ]),
     }) as FormGroup & WithNarrativeMetadata;
     return group;
   }
@@ -359,7 +407,7 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  private createChartTableIndicatorData(): FormGroup & WithNarrativeMetadata {
+  createChartTableIndicatorData(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
       dataset: this.fb.array([this.createChartTableIndicatorDataset()]),
     }) as FormGroup & WithNarrativeMetadata;
@@ -381,14 +429,15 @@ export class ReportBuilderFormService {
   }
 
   // ==================== DATASET CREATORS ====================
-  createCardDataset(): FormGroup & WithNarrativeMetadata {
+  createCardDataset(existingData?: any): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      header: [this.narrativeService.format('', '')],
-      percentage: [''],
-      iconUrl: [''],
-      progress: [0],
-      body: [this.narrativeService.format('', '')],
+      header: [existingData?.header || this.narrativeService.format('', '')],
+      percentage: [existingData?.percentage || ''],
+      iconUrl: [existingData?.iconUrl || ''],
+      progress: [existingData?.progress || 0],
+      body: [existingData?.body || this.narrativeService.format('', '')],
     }) as FormGroup & WithNarrativeMetadata;
+
     this.markAsNarrative(group.get('header')!);
     this.markAsNarrative(group.get('body')!);
     return group;
@@ -469,11 +518,13 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  createPanelDataset(): FormGroup & WithNarrativeMetadata {
+  createPanelDataset(existingData?: any): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      header: this.narrativeService.format('', ''),
-      body: this.narrativeService.format('', ''),
-      explanations: this.narrativeService.format('', ''),
+      header: [existingData?.header || this.narrativeService.format('', '')],
+      body: [existingData?.body || this.narrativeService.format('', '')],
+      explanations: [
+        existingData?.explanations || this.narrativeService.format('', ''),
+      ],
     }) as FormGroup & WithNarrativeMetadata;
 
     this.markAsNarrative(group.get('header')!);
@@ -482,10 +533,20 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  createPanelLayoutDataset(): FormGroup & WithNarrativeMetadata {
+  createPanelLayoutDataset(
+    existingData?: any
+  ): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      left: this.getComponentDefaults('PANEL'),
-      right: this.getComponentDefaults('CARD'),
+      left: this.createNestedComponentWithData(
+        'PANEL',
+        existingData?.left,
+        existingData?.left?.dataset?.[0] // Pass the panel dataset if it exists
+      ),
+      right: this.createNestedComponentWithData(
+        'CARD',
+        existingData?.right,
+        existingData?.right?.dataset?.[0] // Pass the card dataset if it exists
+      ),
     }) as FormGroup & WithNarrativeMetadata;
     return group;
   }
@@ -552,8 +613,7 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  private createChartTableIndicatorDataset(): FormGroup &
-    WithNarrativeMetadata {
+  createChartTableIndicatorDataset(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
       chart: this.createChartComponent(),
       table: this.createTableComponent(),
@@ -770,7 +830,6 @@ export class ReportBuilderFormService {
           return value;
         });
       } else {
-        // For primitive values, just return the value
         return form.value;
       }
     };
