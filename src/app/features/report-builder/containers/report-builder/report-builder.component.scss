@@ -54,3 +54,44 @@
   margin-top: 2rem;
   text-align: center;
 }
+.competency-button {
+  margin: 16px 0;
+}
+
+.component-preview {
+  margin-top: 10px;
+  padding: 10px;
+  border-top: 1px solid #eee;
+
+  .preview-card {
+    h4 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+    }
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: #666;
+    }
+  }
+
+  .preview-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .indicator-value {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .indicator-label {
+      font-size: 14px;
+    }
+  }
+
+  .preview-default {
+    font-style: italic;
+    color: #666;
+  }
+}

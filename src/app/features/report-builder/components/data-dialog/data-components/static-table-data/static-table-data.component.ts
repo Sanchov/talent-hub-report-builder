@@ -1,12 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormGroup, FormArray } from '@angular/forms';
+import { DataComponent } from '../models/data-component.interface';
 
 @Component({
-  selector: 'app-wrapped-items-data',
-  templateUrl: './wrapped-items-data.component.html',
-  styleUrl: './wrapped-items-data.component.scss',
+  selector: 'app-static-table-data',
+  templateUrl: './static-table-data.component.html',
+  styleUrl: './static-table-data.component.scss',
 })
-export class WrappedItemsDataComponent {
+export class StaticTableDataComponent implements DataComponent {
   @Input() form!: FormGroup;
   @Input() data: any;
   @Input() isNarrativeField!: (controlName: string) => boolean;

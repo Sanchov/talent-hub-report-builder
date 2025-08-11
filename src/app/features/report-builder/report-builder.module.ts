@@ -42,6 +42,11 @@ import { PanelDataComponent } from './components/data-dialog/data-components/pan
 import { PanelLayoutDataComponent } from './components/data-dialog/data-components/panel-layout-data/panel-layout-data.component';
 import { WrappedItemsDataComponent } from './components/data-dialog/data-components/wrapped-items-data/wrapped-items-data.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { StaticTableDataComponent } from './components/data-dialog/data-components/static-table-data/static-table-data.component';
+import { GradeIndicatorDataComponent } from './components/data-dialog/data-components/grade-indicator-data/grade-indicator-data.component';
+import { StaticNoteDataComponent } from './components/data-dialog/data-components/static-note-data/static-note-data.component';
+import { CompetencyDialogComponent } from './components/competency-dialog/competency-dialog.component';
+import { JsonParserComponent } from './components/json-parser/json-parser.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +74,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     PanelDataComponent,
     PanelLayoutDataComponent,
     WrappedItemsDataComponent,
+    StaticTableDataComponent,
+    GradeIndicatorDataComponent,
+    StaticNoteDataComponent,
+    CompetencyDialogComponent,
+    JsonParserComponent,
   ],
   imports: [
     MatCheckboxModule,

@@ -461,6 +461,19 @@
         <p>Wrapped Items doesn't have configurable options</p>
       </ng-container>
 
+      <!-- STATIC_TABLE -->
+      <ng-container *ngIf="data.type === 'STATIC_TABLE'">
+        <mat-form-field appearance="fill">
+          <mat-label>Number of Rows</mat-label>
+          <input
+            matInput
+            type="number"
+            min="0"
+            formControlName="staticTableNumOfRows"
+          />
+        </mat-form-field>
+      </ng-container>
+
       <!-- PDF_BREAK -->
       <ng-container *ngIf="data.type === 'PDF_BREAK'">
         <p>PDF Break doesn't have configurable options</p>

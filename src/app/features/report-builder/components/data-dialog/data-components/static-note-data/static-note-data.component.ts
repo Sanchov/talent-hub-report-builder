@@ -1,12 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormGroup, AbstractControl, FormArray } from '@angular/forms';
+import { DataComponent } from '../models/data-component.interface';
 
 @Component({
-  selector: 'app-wrapped-items-data',
-  templateUrl: './wrapped-items-data.component.html',
-  styleUrl: './wrapped-items-data.component.scss',
+  selector: 'app-static-note-data',
+  templateUrl: './static-note-data.component.html',
+  styleUrl: './static-note-data.component.scss',
 })
-export class WrappedItemsDataComponent {
+export class StaticNoteDataComponent {
   @Input() form!: FormGroup;
   @Input() data: any;
   @Input() isNarrativeField!: (controlName: string) => boolean;

@@ -33,8 +33,34 @@ export class ReportBuilderFormService {
   // ==================== PUBLIC API ====================
   createReportForm(): FormGroup {
     return this.fb.group({
+      competencies: this.fb.array([this.createCompetencyItem()]),
       sections: this.fb.array([this.createSection(1)]),
     });
+  }
+
+  addComponentToSectionDirectly(
+    section: FormGroup,
+    type: ComponentType,
+    existingData?: any
+  ): void {
+    const components = this.getComponents(section);
+    const newComponent = this.createComponent(type, existingData);
+    components.push(newComponent);
+  }
+
+  getCompetency(form: FormGroup): FormArray {
+    return form.get('competencies') as FormArray;
+  }
+  createCompetencyItem(): FormGroup {
+    return this.fb.group({
+      name: '',
+      equation: '',
+    });
+  }
+
+  addCompetency(form: FormGroup): void {
+    const competency = this.getCompetency(form);
+    competency.push(this.createCompetencyItem());
   }
 
   createSection(order: number): FormGroup & WithNarrativeMetadata {
@@ -154,10 +180,17 @@ export class ReportBuilderFormService {
       RANGE: () => this.fb.group({}),
       PDF_BREAK: () => this.fb.group({}),
       PANEL_LAYOUT: () => this.fb.group({}),
+      STATIC_TABLE: (opts) => this.createStaticTableOptions(opts),
+      GRADE_INDICATOR: () => this.fb.group({}),
+      STATIC_NOTE: () => this.fb.group({}),
     };
     return creators[type](options);
   }
-
+  private createStaticTableOptions(options: any = {}): FormGroup {
+    return this.fb.group({
+      staticTableNumOfRows: [options.staticTableNumOfRows ?? 0],
+    });
+  }
   createOptionsForm(type: ComponentType, options: any = {}): FormGroup {
     return this.getOptionsCreator(type)(options);
   }
@@ -212,10 +245,13 @@ export class ReportBuilderFormService {
       CHART_TABLE_INDICATOR: () => this.createChartTableIndicatorData(),
       IMAGE: () => this.createImageData(),
       RANGE: () => this.createRangeData(),
+      STATIC_TABLE: () => this.createStaticTableData(),
+      GRADE_INDICATOR: () => this.createGradeIndicatorData(),
+      STATIC_NOTE: () => this.createStaticNoteData(),
     };
     return creators[type]();
   }
-  private createDatasetForType(type: ComponentType, data: any): FormGroup {
+  createDatasetForType(type: ComponentType, data: any): FormGroup {
     switch (type) {
       case 'PANEL':
         return this.createPanelDataset(data);
@@ -256,6 +292,17 @@ export class ReportBuilderFormService {
       options: this.createComponentOptions(type),
     });
   }
+  private createStaticNoteData(): FormGroup & WithNarrativeMetadata {
+    const group = this.fb.group({
+      header: [this.narrativeService.format('', '')],
+      definition: [this.narrativeService.format('', '')],
+      dataset: this.fb.array([this.createStaticNoteDataset()]),
+    }) as FormGroup & WithNarrativeMetadata;
+
+    this.markAsNarrative(group.get('header')!);
+    this.markAsNarrative(group.get('definition')!);
+    return group;
+  }
 
   createCardData(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
@@ -266,6 +313,27 @@ export class ReportBuilderFormService {
 
     this.markAsNarrative(group.get('header')!);
     this.markAsNarrative(group.get('definition')!);
+    return group;
+  }
+
+  private createGradeIndicatorData(): FormGroup & WithNarrativeMetadata {
+    const group = this.fb.group({
+      dataset: this.fb.array([this.createGradeIndicatorDataset()]),
+    }) as FormGroup & WithNarrativeMetadata;
+    return group;
+  }
+
+  private createStaticTableData(): FormGroup & WithNarrativeMetadata {
+    const group = this.fb.group({
+      header: [this.narrativeService.format('', '')],
+      definition: [this.narrativeService.format('', '')],
+      headers: [this.narrativeService.format('', '')],
+      dataset: this.fb.array([]),
+    }) as FormGroup & WithNarrativeMetadata;
+
+    this.markAsNarrative(group.get('header')!);
+    this.markAsNarrative(group.get('definition')!);
+    this.markAsNarrative(group.get('headers')!);
     return group;
   }
 
@@ -452,6 +520,16 @@ export class ReportBuilderFormService {
     return group;
   }
 
+  createGradeIndicatorDataset(): FormGroup & WithNarrativeMetadata {
+    const group = this.fb.group({
+      type: ['HIGH'],
+      label: [this.narrativeService.format('', '')],
+    }) as FormGroup & WithNarrativeMetadata;
+
+    this.markAsNarrative(group.get('label')!);
+    return group;
+  }
+
   createIndicatorDataset(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
       datasetId: [0],
@@ -503,6 +581,17 @@ export class ReportBuilderFormService {
       Score: [0],
       color: [''],
     }) as FormGroup & WithNarrativeMetadata;
+    return group;
+  }
+
+  createStaticNoteDataset(): FormGroup & WithNarrativeMetadata {
+    const group = this.fb.group({
+      label: [this.narrativeService.format('', '')],
+      value: [this.narrativeService.format('', '')],
+    }) as FormGroup & WithNarrativeMetadata;
+
+    this.markAsNarrative(group.get('label')!);
+    this.markAsNarrative(group.get('value')!);
     return group;
   }
 
@@ -563,7 +652,7 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  private createPropertyDataset(): FormGroup & WithNarrativeMetadata {
+  createPropertyDataset(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
       key: [''],
       value: [''],
@@ -572,7 +661,7 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  private createQuestionDataset(): FormGroup & WithNarrativeMetadata {
+  createQuestionDataset(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
       question: [''],
       answers: this.fb.array([this.createAnswerGroup()]),
@@ -589,7 +678,7 @@ export class ReportBuilderFormService {
       value: [''],
     });
   }
-  private createListDataset(): FormGroup & WithNarrativeMetadata {
+  createListDataset(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
       header: [this.narrativeService.format('', '')],
       definition: [this.narrativeService.format('', '')],
@@ -670,6 +759,9 @@ export class ReportBuilderFormService {
       RANGE: () => this.fb.group({}),
       PDF_BREAK: () => this.fb.group({}),
       PANEL_LAYOUT: () => this.fb.group({}),
+      STATIC_TABLE: (opts) => this.createStaticTableOptions(opts),
+      GRADE_INDICATOR: () => this.fb.group({}),
+      STATIC_NOTE: () => this.fb.group({}),
     };
     return creators[type];
   }
@@ -842,7 +934,7 @@ export class ReportBuilderFormService {
   }
 
   // ==================== UTILITIES ====================
-  private generateId(): string {
+  generateId(): string {
     return Math.random().toString(36).substring(2, 9);
   }
 }

@@ -76,7 +76,6 @@ export class OptionsDialogComponent implements OnInit {
     if (this.isSectionOptions) {
       const formValue = this.form.value;
 
-      // Use narrativeService to format values
       const indicatorLabel = this.narrativeService.format(
         formValue.indicator.labelTitle,
         formValue.indicator.labelTraitName,
@@ -135,7 +134,6 @@ export class OptionsDialogComponent implements OnInit {
       }
 
       if (type !== 'CHART_TABLE_INDICATOR') {
-        // For regular components, patch the options directly
         const currentData =
           this.data.target.get('data')?.value ||
           this.formService.createComponentData(type).value;
@@ -146,16 +144,13 @@ export class OptionsDialogComponent implements OnInit {
           data: currentData,
         });
       } else {
-        // Handle CHART_TABLE_INDICATOR component
         const currentData =
           this.data.target.get('data')?.value ||
           this.formService.createComponentData(type).value;
 
-        // Update the dataset with nested component options
         const updatedDataset = currentData.dataset.map((datasetItem: any) => {
           const updatedItem = { ...datasetItem };
 
-          // Update chart options if chart exists
           if (updatedItem.chart) {
             updatedItem.chart.options = {
               ...updatedItem.chart.options,
@@ -168,7 +163,6 @@ export class OptionsDialogComponent implements OnInit {
             };
           }
 
-          // Update table options if table exists
           if (updatedItem.table) {
             updatedItem.table.options = {
               ...updatedItem.table.options,
@@ -179,7 +173,6 @@ export class OptionsDialogComponent implements OnInit {
             };
           }
 
-          // Update indicator options if indicator exists
           if (updatedItem.indicator) {
             updatedItem.indicator.options = {
               ...updatedItem.indicator.options,
@@ -192,19 +185,15 @@ export class OptionsDialogComponent implements OnInit {
           return updatedItem;
         });
 
-        // Create the final updated data structure
         const updatedData = {
           ...currentData,
           dataset: updatedDataset,
         };
-
-        // Create the options object
         const options = {
           indentationLevel: formValue.indentationLevel,
           displayOrder: formValue.displayOrder,
         };
 
-        // Patch the target form with the updated structure
         this.data.target.patchValue({
           type: type,
           options: options,

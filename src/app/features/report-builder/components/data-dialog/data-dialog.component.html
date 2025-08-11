@@ -203,6 +203,23 @@
       >
       </app-chart-table-indicator-data>
 
+      <app-grade-indicator-data
+        *ngSwitchCase="'GRADE_INDICATOR'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField"
+        [getNarrativeFields]="getNarrativeFields"
+        [onNarrativeInput]="onNarrativeInput"
+        [isNarrativeFieldFromControl]="isNarrativeFieldFromControl.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput"
+        [removeDatasetItem]="removeDatasetItem"
+        [addDatasetItem]="addDatasetItem"
+      >
+      </app-grade-indicator-data>
+
       <!-- PANEL_LAYOUT -->
       <!-- <app-panel-layout-dialog
         *ngSwitchCase="'PANEL_LAYOUT'"
@@ -211,12 +228,53 @@
       ></app-panel-layout-dialog> -->
 
       <!-- WRAPPED_ITEMS -->
-      <!-- <app-wrapped-items-dialog
+      <app-wrapped-items-data
         *ngSwitchCase="'WRAPPED_ITEMS'"
         [form]="form"
         [data]="data"
-      ></app-wrapped-items-dialog> -->
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      ></app-wrapped-items-data>
 
+      <app-static-table-data
+        *ngSwitchCase="'STATIC_TABLE'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      >
+      </app-static-table-data>
+
+      <app-static-note-data
+        *ngSwitchCase="'STATIC_NOTE'"
+        [form]="form"
+        [data]="data"
+        [isNarrativeField]="isNarrativeField.bind(this)"
+        [getNarrativeFields]="getNarrativeFields.bind(this)"
+        [onNarrativeInput]="onNarrativeInput.bind(this)"
+        [isNarrativeFieldFromControl]="isNarrativeFieldFromControl.bind(this)"
+        [getNarrativeFieldsFromControl]="
+          getNarrativeFieldsFromControl.bind(this)
+        "
+        [onDatasetNarrativeInput]="onDatasetNarrativeInput.bind(this)"
+        [removeDatasetItem]="removeDatasetItem.bind(this)"
+        [addDatasetItem]="addDatasetItem.bind(this)"
+      >
+      </app-static-note-data>
       <!-- Default -->
       <ng-container *ngSwitchDefault>
         <p>Data editing for this component type is not yet implemented.</p>

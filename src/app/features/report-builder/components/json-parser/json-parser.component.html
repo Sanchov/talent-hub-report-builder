@@ -1,0 +1,40 @@
+<div class="json-parser-container">
+  <form [formGroup]="jsonForm" (ngSubmit)="parseJson()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Paste your JSON here</mat-label>
+      <textarea
+        matInput
+        formControlName="jsonInput"
+        placeholder='{
+  "competencies": [...],
+  "sections": [...]
+}'
+        rows="15"
+        class="json-textarea"
+      ></textarea>
+    </mat-form-field>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div class="button-group">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="jsonForm.invalid"
+      >
+        Parse JSON
+      </button>
+      <button
+        mat-raised-button
+        color="warn"
+        type="button"
+        (click)="clearField()"
+      >
+        Clear
+      </button>
+    </div>
+  </form>
+</div>

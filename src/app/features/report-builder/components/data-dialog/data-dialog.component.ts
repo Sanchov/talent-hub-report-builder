@@ -278,7 +278,12 @@ export class DataDialogComponent implements OnInit {
       case 'CHIP':
         newItem = this.formService.createChipDataset();
         break;
-      // Add cases for other component types as needed
+      case 'GRADE_INDICATOR':
+        newItem = this.formService.createGradeIndicatorDataset();
+        break;
+      case 'STATIC_NOTE':
+        newItem = this.formService.createStaticNoteDataset();
+        break;
       default:
         newItem = this.fb.group({});
     }

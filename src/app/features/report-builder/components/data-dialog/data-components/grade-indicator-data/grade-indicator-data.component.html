@@ -1,0 +1,84 @@
+<div [formGroup]="form">
+  <div formGroupName="data">
+    <h3>Dataset Items</h3>
+    <div formArrayName="dataset" *ngIf="datasetArray">
+      <div
+        *ngFor="let item of datasetArray.controls; let i = index"
+        [formGroupName]="i"
+      >
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Grade Indicator {{ i + 1 }}</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="type">
+              <mat-option value="HIGH">High</mat-option>
+              <mat-option value="AVERAGE">Average</mat-option>
+              <mat-option value="LOW">Low</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <h4>Label</h4>
+          <mat-accordion *ngIf="isNarrativeFieldFromControl(item.get('label'))">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>Label Narrative</mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Title</mat-label>
+                <input
+                  matInput
+                  [value]="
+                    getNarrativeFieldsFromControl(item.get('label'))?.title
+                  "
+                  (input)="onDatasetNarrativeInput($event, i, 'label', 'title')"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Trait Name</mat-label>
+                <input
+                  matInput
+                  [value]="
+                    getNarrativeFieldsFromControl(item.get('label'))?.traitName
+                  "
+                  (input)="
+                    onDatasetNarrativeInput($event, i, 'label', 'traitName')
+                  "
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Trait Value (Optional)</mat-label>
+                <input
+                  matInput
+                  [value]="
+                    getNarrativeFieldsFromControl(item.get('label'))?.traitValue
+                  "
+                  (input)="
+                    onDatasetNarrativeInput($event, i, 'label', 'traitValue')
+                  "
+                />
+              </mat-form-field>
+            </mat-expansion-panel>
+          </mat-accordion>
+
+          <button
+            mat-button
+            color="warn"
+            (click)="removeDatasetItem('dataset', i)"
+          >
+            Remove Item
+          </button>
+        </mat-expansion-panel>
+      </div>
+    </div>
+
+    <button mat-button color="primary" (click)="addDatasetItem('dataset')">
+      Add Grade Indicator
+    </button>
+  </div>
+</div>

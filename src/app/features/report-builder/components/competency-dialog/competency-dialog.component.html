@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Manage Competencies</h2>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <div formArrayName="competencies">
+      <div
+        *ngFor="let competency of competencies.controls; let i = index"
+        [formGroupName]="i"
+        class="competency-item"
+      >
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>name</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Equation</mat-label>
+          <input matInput formControlName="equation" />
+        </mat-form-field>
+
+        <button mat-icon-button color="warn" (click)="removeCompetency(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="addCompetency()">
+      <mat-icon>add</mat-icon> Add Competency
+    </button>
+  </form>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+</div>

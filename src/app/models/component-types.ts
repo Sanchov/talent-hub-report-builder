@@ -16,6 +16,9 @@ export const COMPONENT_TYPES = [
   'PANEL_LAYOUT',
   'WRAPPED_ITEMS',
   'CARD',
+  'STATIC_TABLE',
+  'GRADE_INDICATOR',
+  'STATIC_NOTE',
 ] as const;
 
 export type ComponentType = (typeof COMPONENT_TYPES)[number];

@@ -11,6 +11,9 @@ import { ReportBuilderFormService } from '../../../../service/report-builder-for
 import { MatDialog } from '@angular/material/dialog';
 import { OptionsDialogComponent } from '../../components/options-dialog/options-dialog.component';
 import { DataDialogComponent } from '../../components/data-dialog/data-dialog.component';
+import { CompetencyDialogComponent } from '../../components/competency-dialog/competency-dialog.component';
+import { JsonParserService } from '../../../../service/json-parser.service';
+
 @Component({
   selector: 'app-report-builder',
   templateUrl: './report-builder.component.html',
@@ -21,6 +24,7 @@ export class ReportBuilderComponent implements OnInit {
   formService = inject(ReportBuilderFormService);
   fb = inject(FormBuilder);
   dialog = inject(MatDialog);
+  jsonParserService = inject(JsonParserService);
 
   ngOnInit(): void {
     this.reportForm = this.formService.createReportForm();
@@ -48,6 +52,21 @@ export class ReportBuilderComponent implements OnInit {
     });
   }
 
+  // In report-builder.component.ts
+  onJsonParsed(jsonData: any) {
+    console.log('Received parsed JSON:', jsonData);
+    try {
+      this.reportForm = this.formService.createReportForm();
+
+      this.jsonParserService.applyJsonToForm(this.reportForm, jsonData);
+
+      this.reportForm.updateValueAndValidity();
+      console.log('Form after update:', this.reportForm.value);
+    } catch (error) {
+      console.error('Error applying JSON to form:', error);
+    }
+  }
+
   openDataDialog(sectionIndex: number, componentIndex: number): void {
     const section = this.sections.at(sectionIndex) as FormGroup;
     const components = this.formService.getComponents(section);
@@ -65,6 +84,7 @@ export class ReportBuilderComponent implements OnInit {
       },
     });
   }
+
   getComponents(sectionIndex: number): FormArray {
     const section = this.sections.at(sectionIndex) as FormGroup;
     return this.formService.getComponents(section);
@@ -98,6 +118,35 @@ export class ReportBuilderComponent implements OnInit {
         sectionIndex
       );
     }
+  }
+  openCompetencyDialog(): void {
+    const competencyArray = this.formService.getCompetency(this.reportForm);
+
+    const tempArray = this.fb.array(
+      competencyArray.value.map((item: any) =>
+        this.fb.group({
+          name: item.name,
+          equation: item.equation,
+        })
+      )
+    );
+
+    const dialogRef = this.dialog.open(CompetencyDialogComponent, {
+      width: '800px',
+      data: { form: this.fb.group({ competencies: tempArray }) },
+    });
+
+    dialogRef.afterClosed().subscribe((result: any[] | undefined) => {
+      if (!result) return;
+
+      competencyArray.clear();
+      result.forEach(() => this.formService.addCompetency(this.reportForm));
+
+      competencyArray.patchValue(result);
+
+      this.reportForm.updateValueAndValidity();
+      console.log('Updated competencies:', this.reportForm.value.competencies);
+    });
   }
 
   dropComponent(event: CdkDragDrop<FormGroup[]>, sectionIndex: number): void {
