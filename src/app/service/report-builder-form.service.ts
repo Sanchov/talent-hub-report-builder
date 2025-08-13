@@ -243,10 +243,7 @@ export class ReportBuilderFormService {
     type: ComponentType,
     existingData?: any
   ): FormGroup & WithNarrativeMetadata {
-    const creators: Record<
-      ComponentType,
-      () => FormGroup & WithNarrativeMetadata
-    > = {
+    const creators = {
       CARD: () => {
         const group = this.fb.group({
           dataset: this.fb.array([
@@ -262,30 +259,280 @@ export class ReportBuilderFormService {
 
         this.markAsNarrative(group.get('header')!);
         this.markAsNarrative(group.get('definition')!);
-
         return group;
       },
-      INDICATOR: () => this.createIndicatorData(),
-      CHART: () => this.createChartData(),
-      TABLE: () => this.createTableData(),
-      CHIP: () => this.createChipData(),
-      PANEL: () => this.createPanelData(),
-      PANEL_LAYOUT: () => this.createPanelLayoutData(existingData),
-      BAR_INDICATOR: () => this.createBarIndicatorData(),
-      WRAPPED_ITEMS: () => this.createWrappedItemsData(),
-      PDF_BREAK: () => this.createPdfBreakData(),
-      PROPERTY: () => this.createPropertyData(),
-      QUESTION: () => this.createQuestionData(),
-      LIST: () => this.createListData(),
-      CHART_TABLE_INDICATOR: () => this.createChartTableIndicatorData(),
-      IMAGE: () => this.createImageData(),
-      RANGE: () => this.createRangeData(),
-      STATIC_TABLE: () => this.createStaticTableData(),
-      GRADE_INDICATOR: () => this.createGradeIndicatorData(),
-      STATIC_NOTE: () => this.createStaticNoteData(),
+
+      INDICATOR: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createIndicatorDataset(existingData?.dataset?.[0]),
+          ]),
+          header: [
+            existingData?.header || this.narrativeService.format('', ''),
+          ],
+          definition: [
+            existingData?.definition || this.narrativeService.format('', ''),
+          ],
+          leftLabel: [
+            existingData?.leftLabel || this.narrativeService.format('', ''),
+          ],
+          rightLabel: [
+            existingData?.rightLabel || this.narrativeService.format('', ''),
+          ],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+        this.markAsNarrative(group.get('leftLabel')!);
+        this.markAsNarrative(group.get('rightLabel')!);
+        return group;
+      },
+
+      CHART: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createChartDataset(existingData?.dataset?.[0]),
+          ]),
+          header: [
+            existingData?.header || this.narrativeService.format('', ''),
+          ],
+          definition: [
+            existingData?.definition || this.narrativeService.format('', ''),
+          ],
+          labels: [
+            existingData?.labels || this.narrativeService.format('', ''),
+          ],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+        this.markAsNarrative(group.get('labels')!);
+        return group;
+      },
+
+      TABLE: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createTableRow(existingData?.dataset?.[0]),
+          ]),
+          chips: this.fb.array(
+            existingData?.chips?.map((chip: any) =>
+              this.createChipDataset(chip)
+            ) || [this.createChipDataset()]
+          ),
+          headers: [
+            existingData?.headers || this.narrativeService.format('', ''),
+          ],
+          header: [
+            existingData?.header || this.narrativeService.format('', ''),
+          ],
+          definition: [
+            existingData?.definition || this.narrativeService.format('', ''),
+          ],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('headers')!);
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+        return group;
+      },
+
+      CHIP: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createChipDataset(existingData?.dataset?.[0]),
+          ]),
+          header: [
+            existingData?.header || this.narrativeService.format('', ''),
+          ],
+          definition: [
+            existingData?.definition || this.narrativeService.format('', ''),
+          ],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+        return group;
+      },
+
+      PANEL: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createPanelDataset(existingData?.dataset?.[0]),
+          ]),
+        }) as FormGroup & WithNarrativeMetadata;
+        return group;
+      },
+
+      PANEL_LAYOUT: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createPanelLayoutDataset(existingData?.dataset?.[0]),
+          ]),
+        }) as FormGroup & WithNarrativeMetadata;
+        return group;
+      },
+
+      BAR_INDICATOR: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createBarIndicatorDataset(existingData?.dataset?.[0]),
+          ]),
+          header: [existingData?.header || ''],
+          definition: [existingData?.definition || ''],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+        return group;
+      },
+
+      PROPERTY: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createPropertyDataset(existingData?.dataset?.[0]),
+          ]),
+          header: [
+            existingData?.header || this.narrativeService.format('', ''),
+          ],
+          definition: [
+            existingData?.definition || this.narrativeService.format('', ''),
+          ],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+        return group;
+      },
+
+      QUESTION: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createQuestionDataset(existingData?.dataset?.[0]),
+          ]),
+          header: [
+            existingData?.header || this.narrativeService.format('', ''),
+          ],
+          definition: [
+            existingData?.definition || this.narrativeService.format('', ''),
+          ],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+        return group;
+      },
+
+      LIST: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createListDataset(existingData?.dataset?.[0]),
+          ]),
+          chips: this.fb.array(
+            existingData?.chips?.map((chip: any) =>
+              this.createChipDataset(chip)
+            ) || [this.createChipDataset()]
+          ),
+          header: [
+            existingData?.header || this.narrativeService.format('', ''),
+          ],
+          definition: [
+            existingData?.definition || this.narrativeService.format('', ''),
+          ],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+        return group;
+      },
+
+      CHART_TABLE_INDICATOR: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createChartTableIndicatorDataset(existingData?.dataset?.[0]),
+          ]),
+        }) as FormGroup & WithNarrativeMetadata;
+        return group;
+      },
+
+      IMAGE: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createImageDataset(existingData?.dataset?.[0]),
+          ]),
+        }) as FormGroup & WithNarrativeMetadata;
+        return group;
+      },
+
+      RANGE: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createRangeComponentDataset(existingData?.dataset?.[0]),
+          ]),
+        }) as FormGroup & WithNarrativeMetadata;
+        return group;
+      },
+
+      STATIC_TABLE: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([]),
+          header: [
+            existingData?.header || this.narrativeService.format('', ''),
+          ],
+          definition: [
+            existingData?.definition || this.narrativeService.format('', ''),
+          ],
+          headers: [
+            existingData?.headers || this.narrativeService.format('', ''),
+          ],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+        this.markAsNarrative(group.get('headers')!);
+        return group;
+      },
+
+      GRADE_INDICATOR: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createGradeIndicatorDataset(existingData?.dataset?.[0]),
+          ]),
+        }) as FormGroup & WithNarrativeMetadata;
+        return group;
+      },
+
+      STATIC_NOTE: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createStaticNoteDataset(existingData?.dataset?.[0]),
+          ]),
+          header: [
+            existingData?.header || this.narrativeService.format('', ''),
+          ],
+          definition: [
+            existingData?.definition || this.narrativeService.format('', ''),
+          ],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+        return group;
+      },
+    } as Record<ComponentType, () => FormGroup & WithNarrativeMetadata> & {
+      default?: () => FormGroup & WithNarrativeMetadata;
     };
-    return creators[type]();
+
+    creators.default = () => {
+      const group = this.fb.group({
+        dataset: this.fb.array([]),
+      }) as FormGroup & WithNarrativeMetadata;
+      return group;
+    };
+
+    return (creators[type] || creators.default)();
   }
+
   createDatasetForType(type: ComponentType, data: any): FormGroup {
     switch (type) {
       case 'PANEL':
@@ -534,83 +781,91 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  createImageDataset(): FormGroup & WithNarrativeMetadata {
+  createImageDataset(existingData?: any): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      url: [''],
-      width: [0],
-      height: [0],
+      url: [existingData?.url || ''],
+      width: [existingData?.width || 0],
+      height: [existingData?.height || 0],
     }) as FormGroup & WithNarrativeMetadata;
     return group;
   }
 
-  createGradeIndicatorDataset(): FormGroup & WithNarrativeMetadata {
+  createGradeIndicatorDataset(
+    existingData?: any
+  ): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      type: ['HIGH'],
-      label: [this.narrativeService.format('', '')],
+      type: [existingData?.type || 'HIGH'],
+      label: [existingData?.label || this.narrativeService.format('', '')],
     }) as FormGroup & WithNarrativeMetadata;
 
     this.markAsNarrative(group.get('label')!);
     return group;
   }
 
-  createIndicatorDataset(): FormGroup & WithNarrativeMetadata {
+  createIndicatorDataset(
+    existingData?: any
+  ): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      datasetId: [0],
-      name: [this.narrativeService.format('', '')],
-      scoringRate: [''],
-      valueFrom: [0],
-      valueTo: [0],
-      isSelected: [false],
-      selectedValue: [0],
-      backgroundColor: ['#ffffff'],
-      color: ['#000000'],
+      datasetId: [existingData?.datasetId || 0],
+      name: [existingData?.name || this.narrativeService.format('', '')],
+      scoringRate: [existingData?.scoringRate || ''],
+      valueFrom: [existingData?.valueFrom || 0],
+      valueTo: [existingData?.valueTo || 0],
+      isSelected: [existingData?.isSelected || false],
+      selectedValue: [existingData?.selectedValue || 0],
+      backgroundColor: [existingData?.backgroundColor || '#ffffff'],
+      color: [existingData?.color || '#000000'],
     }) as FormGroup & WithNarrativeMetadata;
 
     this.markAsNarrative(group.get('name')!);
     return group;
   }
 
-  createChartDataset(): FormGroup & WithNarrativeMetadata {
+  createChartDataset(existingData?: any): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      data: this.fb.array([0]),
-      backgroundColor: this.fb.array([]),
-      color: this.fb.array([]),
-      borderRadius: [0],
-      barThickness: [0],
+      data: this.fb.array(existingData?.data || [0]),
+      backgroundColor: this.fb.array(existingData?.backgroundColor || []),
+      color: this.fb.array(existingData?.color || []),
+      borderRadius: [existingData?.borderRadius || 0],
+      barThickness: [existingData?.barThickness || 0],
     }) as FormGroup & WithNarrativeMetadata;
     return group;
   }
 
-  createRangeComponentDataset(): FormGroup & WithNarrativeMetadata {
+  createRangeComponentDataset(
+    existingData?: any
+  ): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      from: 0,
-      to: 0,
-      color: 0,
-      textColor: '',
+      from: [existingData?.from || 0],
+      to: [existingData?.to || 0],
+      color: [existingData?.color || 0],
+      textColor: [existingData?.textColor || ''],
 
-      rangeFrom: 0,
-      rangeTo: 0,
-      rangeColor: '',
-      rangeTextColor: '',
+      rangeFrom: [existingData?.rangeFrom || 0],
+      rangeTo: [existingData?.rangeTo || 0],
+      rangeColor: [existingData?.rangeColor || ''],
+      rangeTextColor: [existingData?.rangeTextColor || ''],
 
-      score: 0,
+      score: [existingData?.score || 0],
     }) as FormGroup & WithNarrativeMetadata;
     return group;
   }
 
-  createTableRow(): FormGroup & WithNarrativeMetadata {
+  createTableRow(existingData?: any): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      Label: [''],
-      Score: [0],
-      color: [''],
+      Label: [existingData?.Label || ''],
+      Score: [existingData?.Score || 0],
+      color: [existingData?.color || ''],
     }) as FormGroup & WithNarrativeMetadata;
     return group;
   }
 
-  createStaticNoteDataset(): FormGroup & WithNarrativeMetadata {
+  createStaticNoteDataset(
+    existingData?: any
+  ): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      label: [this.narrativeService.format('', '')],
-      value: [this.narrativeService.format('', '')],
+      label: [existingData?.label || this.narrativeService.format('', '')],
+      value: [existingData?.value || this.narrativeService.format('', '')],
     }) as FormGroup & WithNarrativeMetadata;
 
     this.markAsNarrative(group.get('label')!);
@@ -618,12 +873,12 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  createChipDataset(): FormGroup & WithNarrativeMetadata {
+  createChipDataset(existingData?: any): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      text: this.narrativeService.format('', ''),
-      icon: [''],
-      color: ['#000000'],
-      backgroundColor: ['#ffffff'],
+      text: [existingData?.text || this.narrativeService.format('', '')],
+      icon: [existingData?.icon || ''],
+      color: [existingData?.color || '#000000'],
+      backgroundColor: [existingData?.backgroundColor || '#ffffff'],
     }) as FormGroup & WithNarrativeMetadata;
 
     this.markAsNarrative(group.get('text')!);
@@ -652,72 +907,88 @@ export class ReportBuilderFormService {
       left: this.createNestedComponentWithData(
         'PANEL',
         existingData?.left,
-        existingData?.left?.dataset?.[0] // Pass the panel dataset if it exists
+        existingData?.left?.dataset?.[0]
       ),
       right: this.createNestedComponentWithData(
         'CARD',
         existingData?.right,
-        existingData?.right?.dataset?.[0] // Pass the card dataset if it exists
+        existingData?.right?.dataset?.[0]
       ),
     }) as FormGroup & WithNarrativeMetadata;
     return group;
   }
 
-  createBarIndicatorDataset(): FormGroup & WithNarrativeMetadata {
+  createBarIndicatorDataset(
+    existingData?: any
+  ): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      backgroundColor: ['#ffffff'],
-      label: [''],
-      value: [0],
-      total: [0],
+      backgroundColor: [existingData?.backgroundColor || '#ffffff'],
+      label: [existingData?.label || ''],
+      value: [existingData?.value || 0],
+      total: [existingData?.total || 0],
     }) as FormGroup & WithNarrativeMetadata;
 
     this.markAsNarrative(group.get('label')!);
     return group;
   }
 
-  createPropertyDataset(): FormGroup & WithNarrativeMetadata {
+  createPropertyDataset(existingData?: any): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      key: [''],
-      value: [''],
-      color: ['#000000'],
+      key: [existingData?.key || ''],
+      value: [existingData?.value || ''],
+      color: [existingData?.color || '#000000'],
     }) as FormGroup & WithNarrativeMetadata;
     return group;
   }
 
-  createQuestionDataset(): FormGroup & WithNarrativeMetadata {
+  createQuestionDataset(existingData?: any): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      question: [''],
-      answers: this.fb.array([this.createAnswerGroup()]),
-      selectedValues: this.fb.array([]),
-      answerText: [''],
-      isCorrect: [false],
+      question: [existingData?.question || ''],
+      answers: this.fb.array(
+        existingData?.answers?.map((answer: any) =>
+          this.createAnswerGroup(answer)
+        ) || [this.createAnswerGroup()]
+      ),
+      selectedValues: this.fb.array(existingData?.selectedValues || []),
+      answerText: [existingData?.answerText || ''],
+      isCorrect: [existingData?.isCorrect || false],
     }) as FormGroup & WithNarrativeMetadata;
     return group;
   }
 
-  private createAnswerGroup(): FormGroup {
+  private createAnswerGroup(existingData?: any): FormGroup {
     return this.fb.group({
-      text: [''],
-      value: [''],
+      text: [existingData?.text || ''],
+      value: [existingData?.value || ''],
     });
   }
-  createListDataset(): FormGroup & WithNarrativeMetadata {
+
+  createListDataset(existingData?: any): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      header: [this.narrativeService.format('', '')],
-      definition: [this.narrativeService.format('', '')],
-      chips: this.fb.array([this.createChipDataset()]),
-      indicator: this.getComponentDefaults('INDICATOR').data,
-      barIndicator: this.getComponentDefaults('BAR_INDICATOR').data,
-      range: this.getComponentDefaults('RANGE').data,
-      body: [''],
-      indentation: [0],
+      header: [existingData?.header || this.narrativeService.format('', '')],
+      definition: [
+        existingData?.definition || this.narrativeService.format('', ''),
+      ],
+      chips: this.fb.array(
+        existingData?.chips?.map((chip: any) =>
+          this.createChipDataset(chip)
+        ) || [this.createChipDataset()]
+      ),
+      indicator:
+        existingData?.indicator || this.getComponentDefaults('INDICATOR').data,
+      barIndicator:
+        existingData?.barIndicator ||
+        this.getComponentDefaults('BAR_INDICATOR').data,
+      range: existingData?.range || this.getComponentDefaults('RANGE').data,
+      body: [existingData?.body || ''],
+      indentation: [existingData?.indentation || 0],
       badge: this.fb.group({
-        value: [''],
-        color: ['#000000'],
-        backgroundColor: ['#ffffff'],
+        value: [existingData?.badge?.value || ''],
+        color: [existingData?.badge?.color || '#000000'],
+        backgroundColor: [existingData?.badge?.backgroundColor || '#ffffff'],
       }),
-      color: ['#000000'],
-      backgroundColor: ['#ffffff'],
+      color: [existingData?.color || '#000000'],
+      backgroundColor: [existingData?.backgroundColor || '#ffffff'],
     }) as FormGroup & WithNarrativeMetadata;
 
     this.markAsNarrative(group.get('header')!);
@@ -725,15 +996,16 @@ export class ReportBuilderFormService {
     return group;
   }
 
-  createChartTableIndicatorDataset(): FormGroup & WithNarrativeMetadata {
+  createChartTableIndicatorDataset(
+    existingData?: any
+  ): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({
-      chart: this.createChartComponent(),
-      table: this.createTableComponent(),
-      indicator: this.createIndicatorComponent(),
+      chart: existingData?.chart || this.createChartComponent(),
+      table: existingData?.table || this.createTableComponent(),
+      indicator: existingData?.indicator || this.createIndicatorComponent(),
     }) as FormGroup & WithNarrativeMetadata;
     return group;
   }
-
   // ==================== COMPONENT BUILDERS ====================
   private createChartComponent(): FormGroup & WithNarrativeMetadata {
     const group = this.fb.group({

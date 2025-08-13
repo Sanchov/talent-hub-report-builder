@@ -11,6 +11,7 @@ export class JsonParserComponent {
   @Output() jsonParsed = new EventEmitter<any>();
   jsonForm: FormGroup;
   errorMessage: string | null = null;
+  parsedJson: any = null;
 
   constructor(private fb: FormBuilder) {
     this.jsonForm = this.fb.group({
@@ -21,9 +22,9 @@ export class JsonParserComponent {
   parseJson() {
     this.errorMessage = null;
     try {
-      const parsedJson = JSON.parse(this.jsonForm.value.jsonInput);
-      console.log('Parsed JSON:', parsedJson); // Add this line
-      this.jsonParsed.emit(parsedJson);
+      this.parsedJson = JSON.parse(this.jsonForm.value.jsonInput);
+      console.log('Parsed JSON:', this.parsedJson);
+      this.jsonParsed.emit(this.parsedJson);
     } catch (error) {
       this.errorMessage = 'Invalid JSON format. Please check your input.';
       console.error('JSON parsing error:', error);
@@ -33,5 +34,10 @@ export class JsonParserComponent {
   clearField() {
     this.jsonForm.reset();
     this.errorMessage = null;
+    this.parsedJson = null;
+  }
+
+  getParsedJson() {
+    return this.parsedJson;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import {
   FormGroup,
   FormArray,
@@ -13,6 +13,7 @@ import { OptionsDialogComponent } from '../../components/options-dialog/options-
 import { DataDialogComponent } from '../../components/data-dialog/data-dialog.component';
 import { CompetencyDialogComponent } from '../../components/competency-dialog/competency-dialog.component';
 import { JsonParserService } from '../../../../service/json-parser.service';
+import { JsonParserComponent } from '../../components/json-parser/json-parser.component';
 
 @Component({
   selector: 'app-report-builder',
@@ -25,6 +26,7 @@ export class ReportBuilderComponent implements OnInit {
   fb = inject(FormBuilder);
   dialog = inject(MatDialog);
   jsonParserService = inject(JsonParserService);
+  @ViewChild(JsonParserComponent) jsonParserComponent!: JsonParserComponent;
 
   ngOnInit(): void {
     this.reportForm = this.formService.createReportForm();
@@ -39,7 +41,6 @@ export class ReportBuilderComponent implements OnInit {
     const components = this.formService.getComponents(section);
     const component = components.at(componentIndex) as FormGroup;
 
-    // Get the current options value from the component
     const optionsValue = component.get('options')?.value;
 
     this.dialog.open(OptionsDialogComponent, {
@@ -49,7 +50,7 @@ export class ReportBuilderComponent implements OnInit {
       panelClass: 'custom-dialog-panel',
       data: {
         type: component.get('type')?.value,
-        options: optionsValue, // Pass the actual options value
+        options: optionsValue,
         target: component,
       },
     });
