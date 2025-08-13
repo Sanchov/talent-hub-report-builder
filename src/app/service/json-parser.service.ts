@@ -52,7 +52,6 @@ export class JsonParserService {
       const lastIndex = competencyArray.length - 1;
       const competencyGroup = competencyArray.at(lastIndex) as FormGroup;
 
-      // Patch the competency values, ensuring we only include valid fields
       const validCompetency = {
         name: competency.name || '',
         equation: competency.equation || '',
@@ -68,11 +67,9 @@ export class JsonParserService {
       this.formService.addSection(reportForm);
       const newSection = sectionsArray.at(index) as FormGroup;
 
-      // Create a copy of section data without components to avoid conflicts
       const sectionDataCopy = { ...sectionData };
       delete sectionDataCopy.components;
 
-      // Patch the section values
       newSection.patchValue({
         id: sectionDataCopy.id || '',
         header: sectionDataCopy.header || '',
@@ -99,12 +96,17 @@ export class JsonParserService {
     section: FormGroup,
     componentsData: any[]
   ): void {
+    console.log('=== Adding components to section ===');
     const componentsArray = this.formService.getComponents(section);
 
-    componentsData.forEach((componentData) => {
-      if (!componentData.type) return;
+    componentsData.forEach((componentData, index) => {
+      console.log(`Processing component ${index}:`, componentData);
 
-      // Create the component with its data and options
+      if (!componentData.type) {
+        console.log('Skipping component - no type defined');
+        return;
+      }
+
       const newComponent = this.formService.createComponent(
         componentData.type as ComponentType,
         {
@@ -117,15 +119,18 @@ export class JsonParserService {
         }
       );
 
-      // Handle special cases for datasets in components
+      console.log('Created new component:', newComponent.value);
+
       if (
         componentData.data?.dataset &&
         Array.isArray(componentData.data.dataset)
       ) {
+        console.log('Processing dataset for component');
         const componentDataset = newComponent.get('data.dataset') as FormArray;
         componentDataset.clear();
 
         componentData.data.dataset.forEach((datasetItem: any) => {
+          console.log('Adding dataset item:', datasetItem);
           const datasetGroup = this.createDatasetForType(
             componentData.type,
             datasetItem
@@ -134,15 +139,16 @@ export class JsonParserService {
         });
       }
 
-      // Handle chips array if present
       if (
         componentData.data?.chips &&
         Array.isArray(componentData.data.chips)
       ) {
+        console.log('Processing chips for component');
         const chipsArray = newComponent.get('data.chips') as FormArray;
         chipsArray.clear();
 
         componentData.data.chips.forEach((chipItem: any) => {
+          console.log('Adding chip item:', chipItem);
           const chipGroup = this.formService.createChipDataset();
           chipGroup.patchValue(chipItem);
           chipsArray.push(chipGroup);
@@ -150,14 +156,32 @@ export class JsonParserService {
       }
 
       componentsArray.push(newComponent);
+      console.log('Added component to section');
     });
+    console.log('=== Finished adding components ===');
   }
 
   private prepareComponentData(type: ComponentType, data: any): any {
-    // Create a copy of the data without arrays that need special handling
+    console.log('=== Preparing component data ===');
+    console.log('Type:', type);
+    console.log('Original data:', data);
+
     const dataCopy = { ...data };
     delete dataCopy.dataset;
     delete dataCopy.chips;
+
+    // Handle narrative fields
+    Object.keys(dataCopy).forEach((key) => {
+      if (
+        typeof dataCopy[key] === 'string' &&
+        dataCopy[key].startsWith('$narrative(')
+      ) {
+        console.log(`Found narrative field ${key}:`, dataCopy[key]);
+        // Keep the narrative string as is - it will be parsed in the dialog
+      }
+    });
+
+    console.log('Prepared data:', dataCopy);
     return dataCopy;
   }
 

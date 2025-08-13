@@ -39,6 +39,9 @@ export class ReportBuilderComponent implements OnInit {
     const components = this.formService.getComponents(section);
     const component = components.at(componentIndex) as FormGroup;
 
+    // Get the current options value from the component
+    const optionsValue = component.get('options')?.value;
+
     this.dialog.open(OptionsDialogComponent, {
       width: '700px',
       height: 'auto',
@@ -46,13 +49,33 @@ export class ReportBuilderComponent implements OnInit {
       panelClass: 'custom-dialog-panel',
       data: {
         type: component.get('type')?.value,
-        options: component.get('options')?.value,
+        options: optionsValue, // Pass the actual options value
         target: component,
       },
     });
   }
 
-  // In report-builder.component.ts
+  openDataDialog(sectionIndex: number, componentIndex: number): void {
+    const section = this.sections.at(sectionIndex) as FormGroup;
+    const components = this.formService.getComponents(section);
+    const component = components.at(componentIndex) as FormGroup;
+
+    // Get the current data value from the component
+    const dataValue = component.get('data')?.value;
+
+    this.dialog.open(DataDialogComponent, {
+      width: '700px',
+      height: 'auto',
+      maxHeight: '90vh',
+      panelClass: 'custom-dialog-panel',
+      data: {
+        type: component.get('type')?.value,
+        data: dataValue, // Pass the actual data value
+        target: component,
+      },
+    });
+  }
+
   onJsonParsed(jsonData: any) {
     console.log('Received parsed JSON:', jsonData);
     try {
@@ -65,24 +88,6 @@ export class ReportBuilderComponent implements OnInit {
     } catch (error) {
       console.error('Error applying JSON to form:', error);
     }
-  }
-
-  openDataDialog(sectionIndex: number, componentIndex: number): void {
-    const section = this.sections.at(sectionIndex) as FormGroup;
-    const components = this.formService.getComponents(section);
-    const component = components.at(componentIndex) as FormGroup;
-
-    this.dialog.open(DataDialogComponent, {
-      width: '700px',
-      height: 'auto',
-      maxHeight: '90vh',
-      panelClass: 'custom-dialog-panel',
-      data: {
-        type: component.get('type')?.value,
-        data: component.get('data')?.value,
-        target: component,
-      },
-    });
   }
 
   getComponents(sectionIndex: number): FormArray {

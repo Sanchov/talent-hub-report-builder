@@ -154,11 +154,29 @@ export class ReportBuilderFormService {
   }
 
   createComponent(type: ComponentType, existingData?: any): FormGroup {
-    return this.fb.group({
+    const componentGroup = this.fb.group({
       type,
       data: this.createComponentData(type, existingData?.data),
       options: this.createComponentOptions(type, existingData?.options),
     });
+
+    // Special handling for narrative fields in data
+    if (existingData?.data) {
+      const dataGroup = componentGroup.get('data') as FormGroup;
+      Object.keys(existingData.data).forEach((key) => {
+        const control = dataGroup.get(key);
+        if (control) {
+          // Only set the value if it's a narrative field or if the control is empty
+          if (this.isNarrativeField(control)) {
+            control.setValue(existingData.data[key]);
+          } else if (!control.value) {
+            control.setValue(existingData.data[key]);
+          }
+        }
+      });
+    }
+
+    return componentGroup;
   }
 
   createComponentOptions(type: ComponentType, options: any = {}): FormGroup {
@@ -229,7 +247,24 @@ export class ReportBuilderFormService {
       ComponentType,
       () => FormGroup & WithNarrativeMetadata
     > = {
-      CARD: () => this.createCardData(),
+      CARD: () => {
+        const group = this.fb.group({
+          dataset: this.fb.array([
+            this.createCardDataset(existingData?.dataset?.[0]),
+          ]),
+          header: [
+            existingData?.header || this.narrativeService.format('', ''),
+          ],
+          definition: [
+            existingData?.definition || this.narrativeService.format('', ''),
+          ],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('header')!);
+        this.markAsNarrative(group.get('definition')!);
+
+        return group;
+      },
       INDICATOR: () => this.createIndicatorData(),
       CHART: () => this.createChartData(),
       TABLE: () => this.createTableData(),
@@ -297,18 +332,6 @@ export class ReportBuilderFormService {
       header: [this.narrativeService.format('', '')],
       definition: [this.narrativeService.format('', '')],
       dataset: this.fb.array([this.createStaticNoteDataset()]),
-    }) as FormGroup & WithNarrativeMetadata;
-
-    this.markAsNarrative(group.get('header')!);
-    this.markAsNarrative(group.get('definition')!);
-    return group;
-  }
-
-  createCardData(): FormGroup & WithNarrativeMetadata {
-    const group = this.fb.group({
-      dataset: this.fb.array([this.createCardDataset()]),
-      header: [this.narrativeService.format('', '')],
-      definition: [this.narrativeService.format('', '')],
     }) as FormGroup & WithNarrativeMetadata;
 
     this.markAsNarrative(group.get('header')!);
@@ -883,13 +906,22 @@ export class ReportBuilderFormService {
   }
 
   getNarrativeValue(control: AbstractControl | null): NarrativeField | null {
-    if (control && this.isNarrativeField(control)) {
+    if (!control || !this.isNarrativeField(control)) {
+      return null;
+    }
+
+    const value = control.value;
+    if (value === null || value === undefined) {
       return {
-        rawValue: control.value,
-        parsedValue: this.narrativeService.parse(control.value),
+        rawValue: '',
+        parsedValue: { title: '', traitName: '', traitValue: '' },
       };
     }
-    return null;
+
+    return {
+      rawValue: value,
+      parsedValue: this.narrativeService.parse(String(value)),
+    };
   }
 
   private getComponentDefaults(type: ComponentType): any {

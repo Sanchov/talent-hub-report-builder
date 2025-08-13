@@ -40,10 +40,73 @@ export class DataDialogComponent implements OnInit {
       data: this.formService.createComponentData(this.data.type),
     });
 
-    this.form.get('data')?.patchValue(this.data.data || {});
+    this.patchFormWithData();
   }
+  private patchFormWithData(): void {
+    if (!this.data?.data) return;
+
+    const dataControl = this.form.get('data');
+    if (dataControl) {
+      // First patch the basic values
+      dataControl.patchValue(this.data.data);
+
+      // Then handle narrative fields specifically
+      Object.keys(this.data.data).forEach((key) => {
+        const control = dataControl.get(key);
+        if (control && this.formService.isNarrativeField(control)) {
+          const value = this.data.data[key];
+          if (
+            typeof value === 'string' &&
+            this.narrativeService.isNarrative(value)
+          ) {
+            control.setValue(value);
+          }
+        }
+      });
+    }
+
+    // Handle dataset and other nested structures
+    if (this.data.data?.dataset) {
+      const datasetArray = dataControl?.get('dataset') as FormArray;
+      datasetArray.clear();
+      this.data.data.dataset.forEach((item: any) => {
+        const datasetGroup = this.formService.createDatasetForType(
+          this.data.type,
+          item
+        );
+        datasetArray.push(datasetGroup);
+      });
+    }
+  }
+
+  private getControlPath(control: AbstractControl): string {
+    const path: string[] = [];
+    let current: AbstractControl | null = control;
+
+    while (current && current.parent) {
+      const parent: AbstractControl | FormGroup | FormArray = current.parent;
+      if (parent instanceof FormGroup) {
+        const key = Object.keys(parent.controls).find(
+          (k) => parent.get(k) === current
+        );
+        if (key) {
+          path.unshift(key);
+        }
+      } else if (parent instanceof FormArray) {
+        const index = parent.controls.indexOf(current);
+        path.unshift(`[${index}]`);
+      }
+      current = parent;
+    }
+
+    return path.join('.');
+  }
+
   getDatasetControls(): FormGroup[] {
-    return (this.form.get('data.dataset') as FormArray).controls as FormGroup[];
+    return (
+      ((this.form.get('data.dataset') as FormArray)?.controls as FormGroup[]) ||
+      []
+    );
   }
 
   save() {
@@ -84,6 +147,7 @@ export class DataDialogComponent implements OnInit {
       traitValue: narrativeValue?.parsedValue?.traitValue || '',
     };
   }
+
   onDatasetNarrativeInput(
     event: Event,
     index: number,
@@ -150,14 +214,12 @@ export class DataDialogComponent implements OnInit {
       parsedValue: { title: '', traitName: '', traitValue: '' },
     };
 
-    // Update the specific field
     if (!narrativeValue.parsedValue) {
       narrativeValue.parsedValue = { title: '', traitName: '', traitValue: '' };
     }
 
     narrativeValue.parsedValue[field] = value;
 
-    // Reconstruct the narrative string
     const newValue = this.narrativeService.format(
       narrativeValue.parsedValue.title ?? '',
       narrativeValue.parsedValue.traitName ?? '',
@@ -170,21 +232,22 @@ export class DataDialogComponent implements OnInit {
   get datasetArray() {
     return this.form?.get('data.dataset') as FormArray | null;
   }
-  onNarrativeInput(
-    event: Event,
-    controlName: string,
-    field: string // ← make this `string`, not the union
-  ) {
+
+  onNarrativeInput(event: Event, controlName: string, field: string) {
     if (field === 'title' || field === 'traitName' || field === 'traitValue') {
       this.updateNarrativeField(
         controlName,
-        field,
+        field as 'title' | 'traitName' | 'traitValue',
         (event.target as HTMLInputElement).value
       );
     }
   }
+
   getChipControls(): FormGroup[] {
-    return (this.form.get('data.chips') as FormArray).controls as FormGroup[];
+    return (
+      ((this.form.get('data.chips') as FormArray)?.controls as FormGroup[]) ||
+      []
+    );
   }
 
   addChipItem() {
@@ -223,9 +286,11 @@ export class DataDialogComponent implements OnInit {
     const dataArray = datasetItem.get('data') as FormArray;
     dataArray.removeAt(index);
   }
+
   getFormControlFromArray(formArray: FormArray, index: number): FormControl {
     return formArray.at(index) as FormControl;
   }
+
   getChartDataPoints(formGroup: AbstractControl): FormArray {
     return formGroup.get('data') as FormArray;
   }

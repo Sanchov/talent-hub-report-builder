@@ -7,7 +7,7 @@ export class NarrativeService {
   private readonly NARRATIVE_PREFIX = '$narrative(';
   private readonly NARRATIVE_SUFFIX = ')';
 
-  parse(narrative: string): {
+  parse(narrative: string | null | undefined): {
     title: string;
     traitName: string;
     traitValue?: string;
@@ -16,9 +16,9 @@ export class NarrativeService {
       return { title: '', traitName: '', traitValue: '' };
     }
 
-    const content = narrative.substring(
+    const content = (narrative as string).substring(
       this.NARRATIVE_PREFIX.length,
-      narrative.length - this.NARRATIVE_SUFFIX.length
+      (narrative as string).length - this.NARRATIVE_SUFFIX.length
     );
     const parts = content.split(',');
 
@@ -43,10 +43,11 @@ export class NarrativeService {
     }`;
   }
 
-  isNarrative(str: string): boolean {
+  isNarrative(str: string | null | undefined): boolean {
+    if (typeof str !== 'string') return false;
     return (
-      str?.startsWith(this.NARRATIVE_PREFIX) &&
-      str?.endsWith(this.NARRATIVE_SUFFIX)
+      str.startsWith(this.NARRATIVE_PREFIX) &&
+      str.endsWith(this.NARRATIVE_SUFFIX)
     );
   }
 }
