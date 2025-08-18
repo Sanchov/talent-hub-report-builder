@@ -391,6 +391,33 @@ export class ReportBuilderFormService {
         this.markAsNarrative(group.get('definition')!);
         return group;
       },
+      WRAPPED_ITEMS: (existingData?: any) => {
+        let datasetValue: string;
+
+        if (typeof existingData?.dataset === 'string') {
+          datasetValue = existingData.dataset;
+        } else if (
+          existingData?.dataset &&
+          typeof existingData.dataset === 'object'
+        ) {
+          datasetValue = this.narrativeService.format(
+            existingData.dataset.title || '',
+            existingData.dataset.traitName || '',
+            existingData.dataset.traitValue || ''
+          );
+        } else {
+          // Default blank
+          datasetValue = this.narrativeService.format('', '', '');
+        }
+
+        const group = this.fb.group({
+          dataset: [datasetValue],
+        }) as FormGroup & WithNarrativeMetadata;
+
+        this.markAsNarrative(group.get('dataset')!);
+
+        return group;
+      },
 
       PROPERTY: () => {
         const group = this.fb.group({
@@ -591,6 +618,36 @@ export class ReportBuilderFormService {
 
     this.markAsNarrative(group.get('name')!);
     return group;
+  }
+  createWarpedItemsDatasetItem(
+    existingData?: any
+  ): FormGroup & WithNarrativeMetadata {
+    const group = this.fb.group({
+      dataset: [
+        existingData?.dataset || this.narrativeService.format('', '', ''),
+      ],
+    }) as FormGroup & WithNarrativeMetadata;
+
+    this.markAsNarrative(group.get('dataset')!);
+
+    return group;
+  }
+
+  createWarpedItemsDataset(
+    existingData?: any[]
+  ): FormArray & WithNarrativeMetadata {
+    const array = this.fb.array([]) as FormArray & WithNarrativeMetadata;
+    this.markAsNarrative(array);
+
+    if (existingData?.length) {
+      existingData.forEach((item: any) => {
+        array.push(this.createWarpedItemsDatasetItem(item));
+      });
+    } else {
+      array.push(this.createWarpedItemsDatasetItem());
+    }
+
+    return array;
   }
 
   createChartDataset(existingData?: any): FormGroup & WithNarrativeMetadata {

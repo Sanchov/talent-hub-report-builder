@@ -1,38 +1,35 @@
-<div [formGroup]="form">
-  <div formGroupName="data">
-    <h3>Wrapped Items</h3>
+<div>
+  <h3>Wrapped Item Narrative</h3>
 
-    <mat-accordion *ngIf="isNarrativeField('dataset')">
-      <mat-expansion-panel expanded="true">
-        <!-- Narrative Configuration -->
-        <h4>Narrative DataSet</h4>
-        <mat-form-field appearance="fill">
-          <mat-label>Title</mat-label>
-          <input
-            matInput
-            [value]="getNarrativeFields('dataset')?.title"
-            (input)="onNarrativeInput($event, 'dataset', 'title')"
-          />
-        </mat-form-field>
+  <ng-container *ngIf="datasetControl">
+    <!-- Title -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Title</mat-label>
+      <input
+        matInput
+        [value]="getNarrativeFieldsFromControl(datasetControl)?.title"
+        (input)="onNarrativeInput($event, 'dataset', 'title')"
+      />
+    </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Trait Name</mat-label>
-          <input
-            matInput
-            [value]="getNarrativeFields('dataset')?.traitName"
-            (input)="onNarrativeInput($event, 'dataset', 'traitName')"
-          />
-        </mat-form-field>
+    <!-- Trait Name -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Trait Name</mat-label>
+      <input
+        matInput
+        [value]="getNarrativeFieldsFromControl(datasetControl)?.traitName"
+        (input)="onNarrativeInput($event, 'dataset', 'traitName')"
+      />
+    </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Trait Value (Optional)</mat-label>
-          <input
-            matInput
-            [value]="getNarrativeFields('dataset')?.traitValue"
-            (input)="onNarrativeInput($event, 'dataset', 'traitValue')"
-          />
-        </mat-form-field>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
+    <!-- Trait Value -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Trait Value</mat-label>
+      <input
+        matInput
+        [value]="getNarrativeFieldsFromControl(datasetControl)?.traitValue"
+        (input)="onNarrativeInput($event, 'dataset', 'traitValue')"
+      />
+    </mat-form-field>
+  </ng-container>
 </div>

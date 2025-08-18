@@ -1,5 +1,10 @@
-import { Component, Input } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { Component, inject, Input } from '@angular/core';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-wrapped-items-data',
@@ -9,6 +14,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 export class WrappedItemsDataComponent {
   @Input() form!: FormGroup;
   @Input() data: any;
+  fb = inject(FormBuilder);
   @Input() isNarrativeField!: (controlName: string) => boolean;
   @Input() getNarrativeFields!: (controlName: string) => any;
   @Input() onNarrativeInput!: (
@@ -28,7 +34,7 @@ export class WrappedItemsDataComponent {
   @Input() removeDatasetItem!: (controlName: string, index: number) => void;
   @Input() addDatasetItem!: (controlName: string) => void;
 
-  get datasetArray(): FormArray | null {
-    return this.form?.get('data.dataset') as FormArray | null;
+  get datasetControl(): AbstractControl | null {
+    return this.form?.get('data.dataset') ?? null;
   }
 }

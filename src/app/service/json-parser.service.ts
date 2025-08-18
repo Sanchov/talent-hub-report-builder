@@ -324,9 +324,14 @@ export class JsonParserService {
 
   private prepareComponentData(type: ComponentType, data: any): any {
     const dataCopy = { ...data };
-    delete dataCopy.dataset;
-    delete dataCopy.chips;
 
+    // Only strip dataset/chips for the types that handle them specially
+    if (type !== 'WRAPPED_ITEMS' && type !== 'CHART_TABLE_INDICATOR') {
+      delete dataCopy.dataset;
+      delete dataCopy.chips;
+    }
+
+    // Debug narratives
     Object.keys(dataCopy).forEach((key) => {
       if (
         typeof dataCopy[key] === 'string' &&
@@ -336,7 +341,6 @@ export class JsonParserService {
       }
     });
 
-    console.log('Prepared data:', dataCopy);
     return dataCopy;
   }
 }

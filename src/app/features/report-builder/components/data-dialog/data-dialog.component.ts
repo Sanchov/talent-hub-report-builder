@@ -47,10 +47,8 @@ export class DataDialogComponent implements OnInit {
 
     const dataControl = this.form.get('data');
     if (dataControl) {
-      // First patch the basic values
       dataControl.patchValue(this.data.data);
 
-      // Then handle narrative fields specifically
       Object.keys(this.data.data).forEach((key) => {
         const control = dataControl.get(key);
         if (control && this.formService.isNarrativeField(control)) {
@@ -65,20 +63,13 @@ export class DataDialogComponent implements OnInit {
       });
     }
 
-    // Handle dataset and other nested structures
     if (this.data.data?.dataset) {
-      const datasetArray = dataControl?.get('dataset') as FormArray;
-      datasetArray.clear();
-      this.data.data.dataset.forEach((item: any) => {
-        const datasetGroup = this.formService.createDatasetForType(
-          this.data.type,
-          item
-        );
-        datasetArray.push(datasetGroup);
-      });
+      const datasetControl = dataControl?.get('dataset');
+      if (datasetControl) {
+        datasetControl.setValue(this.data.data.dataset);
+      }
     }
   }
-
   getDatasetControls(): FormGroup[] {
     return (
       ((this.form.get('data.dataset') as FormArray)?.controls as FormGroup[]) ||
