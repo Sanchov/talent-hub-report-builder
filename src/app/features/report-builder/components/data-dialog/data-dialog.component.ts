@@ -79,29 +79,6 @@ export class DataDialogComponent implements OnInit {
     }
   }
 
-  private getControlPath(control: AbstractControl): string {
-    const path: string[] = [];
-    let current: AbstractControl | null = control;
-
-    while (current && current.parent) {
-      const parent: AbstractControl | FormGroup | FormArray = current.parent;
-      if (parent instanceof FormGroup) {
-        const key = Object.keys(parent.controls).find(
-          (k) => parent.get(k) === current
-        );
-        if (key) {
-          path.unshift(key);
-        }
-      } else if (parent instanceof FormArray) {
-        const index = parent.controls.indexOf(current);
-        path.unshift(`[${index}]`);
-      }
-      current = parent;
-    }
-
-    return path.join('.');
-  }
-
   getDatasetControls(): FormGroup[] {
     return (
       ((this.form.get('data.dataset') as FormArray)?.controls as FormGroup[]) ||
@@ -349,6 +326,7 @@ export class DataDialogComponent implements OnInit {
       case 'STATIC_NOTE':
         newItem = this.formService.createStaticNoteDataset();
         break;
+
       default:
         newItem = this.fb.group({});
     }

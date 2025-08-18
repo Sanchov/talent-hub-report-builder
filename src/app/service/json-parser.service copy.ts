@@ -107,12 +107,6 @@ export class JsonParserService {
         return;
       }
 
-      // Handle CHART_TABLE_INDICATOR specially
-      if (componentData.type === 'CHART_TABLE_INDICATOR') {
-        this.addChartTableIndicatorComponent(componentsArray, componentData);
-        return;
-      }
-
       const newComponent = this.formService.createComponent(
         componentData.type as ComponentType,
         {
@@ -137,13 +131,10 @@ export class JsonParserService {
 
         componentData.data.dataset.forEach((datasetItem: any) => {
           console.log('Adding dataset item:', datasetItem);
-          const tempComponent = this.formService.createComponent(
-            componentData.type as ComponentType,
-            { data: { dataset: [datasetItem] } }
+          const datasetGroup = this.createDatasetForType(
+            componentData.type,
+            datasetItem
           );
-          const datasetGroup = (
-            tempComponent.get('data.dataset') as FormArray
-          ).at(0) as FormGroup;
           componentDataset.push(datasetGroup);
         });
       }
@@ -168,160 +159,6 @@ export class JsonParserService {
     });
   }
 
-  private addChartTableIndicatorComponent(
-    componentsArray: FormArray,
-    componentData: any
-  ): void {
-    console.log('Processing CHART_TABLE_INDICATOR component:', componentData);
-
-    // Create the base component
-    const newComponent = this.formService.createComponent(
-      'CHART_TABLE_INDICATOR' as ComponentType,
-      {
-        type: 'CHART_TABLE_INDICATOR',
-        data: {},
-        options: componentData.options || {},
-      }
-    );
-
-    console.log(
-      'Created base CHART_TABLE_INDICATOR component:',
-      newComponent.value
-    );
-
-    // Handle the dataset array
-    if (
-      componentData.data?.dataset &&
-      Array.isArray(componentData.data.dataset)
-    ) {
-      const componentDataset = newComponent.get('data.dataset') as FormArray;
-      componentDataset.clear();
-
-      componentData.data.dataset.forEach((datasetItem: any, index: number) => {
-        console.log(`Processing dataset item ${index}:`, datasetItem);
-
-        // Create a new chart-table-indicator dataset item
-        const newDatasetItem =
-          this.formService.createChartTableIndicatorDataset();
-
-        // Populate chart data
-        if (datasetItem.chart?.data) {
-          this.populateChartData(
-            newDatasetItem.get('chart.data') as FormGroup,
-            datasetItem.chart.data
-          );
-        }
-
-        // Populate table data
-        if (datasetItem.table?.data) {
-          this.populateTableData(
-            newDatasetItem.get('table.data') as FormGroup,
-            datasetItem.table.data
-          );
-        }
-
-        // Populate indicator data
-        if (datasetItem.indicator?.data) {
-          this.populateIndicatorData(
-            newDatasetItem.get('indicator.data') as FormGroup,
-            datasetItem.indicator.data
-          );
-        }
-
-        componentDataset.push(newDatasetItem);
-      });
-    }
-
-    componentsArray.push(newComponent);
-    console.log('Added CHART_TABLE_INDICATOR component to array');
-  }
-
-  private populateChartData(chartDataGroup: FormGroup, chartData: any): void {
-    console.log('Populating chart data:', chartData);
-
-    // Handle narrative fields
-    ['header', 'definition', 'labels'].forEach((field) => {
-      if (chartData[field] && chartDataGroup.get(field)) {
-        chartDataGroup.get(field)!.setValue(chartData[field]);
-      }
-    });
-
-    // Handle chart dataset
-    if (chartData.dataset && Array.isArray(chartData.dataset)) {
-      const chartDatasetArray = chartDataGroup.get('dataset') as FormArray;
-      chartDatasetArray.clear();
-
-      chartData.dataset.forEach((datasetItem: any) => {
-        const chartDatasetItem = this.formService.createChartDataset();
-        chartDatasetItem.patchValue(datasetItem);
-        chartDatasetArray.push(chartDatasetItem);
-      });
-    }
-  }
-
-  private populateTableData(tableDataGroup: FormGroup, tableData: any): void {
-    console.log('Populating table data:', tableData);
-
-    // Handle narrative fields
-    ['headers', 'header', 'definition'].forEach((field) => {
-      if (tableData[field] && tableDataGroup.get(field)) {
-        tableDataGroup.get(field)!.setValue(tableData[field]);
-      }
-    });
-
-    // Handle table dataset (rows)
-    if (tableData.dataset && Array.isArray(tableData.dataset)) {
-      const tableDatasetArray = tableDataGroup.get('dataset') as FormArray;
-      tableDatasetArray.clear();
-
-      tableData.dataset.forEach((rowItem: any) => {
-        const tableRow = this.formService.createTableRow();
-        tableRow.patchValue(rowItem);
-        tableDatasetArray.push(tableRow);
-      });
-    }
-
-    // Handle chips
-    if (tableData.chips && Array.isArray(tableData.chips)) {
-      const chipsArray = tableDataGroup.get('chips') as FormArray;
-      chipsArray.clear();
-
-      tableData.chips.forEach((chipItem: any) => {
-        const chipGroup = this.formService.createChipDataset();
-        chipGroup.patchValue(chipItem);
-        chipsArray.push(chipGroup);
-      });
-    }
-  }
-
-  private populateIndicatorData(
-    indicatorDataGroup: FormGroup,
-    indicatorData: any
-  ): void {
-    console.log('Populating indicator data:', indicatorData);
-
-    // Handle narrative fields
-    ['header', 'definition', 'leftLabel', 'rightLabel'].forEach((field) => {
-      if (indicatorData[field] && indicatorDataGroup.get(field)) {
-        indicatorDataGroup.get(field)!.setValue(indicatorData[field]);
-      }
-    });
-
-    // Handle indicator dataset
-    if (indicatorData.dataset && Array.isArray(indicatorData.dataset)) {
-      const indicatorDatasetArray = indicatorDataGroup.get(
-        'dataset'
-      ) as FormArray;
-      indicatorDatasetArray.clear();
-
-      indicatorData.dataset.forEach((indicatorItem: any) => {
-        const indicatorDatasetItem = this.formService.createIndicatorDataset();
-        indicatorDatasetItem.patchValue(indicatorItem);
-        indicatorDatasetArray.push(indicatorDatasetItem);
-      });
-    }
-  }
-
   private prepareComponentData(type: ComponentType, data: any): any {
     const dataCopy = { ...data };
     delete dataCopy.dataset;
@@ -338,5 +175,79 @@ export class JsonParserService {
 
     console.log('Prepared data:', dataCopy);
     return dataCopy;
+  }
+
+  private createDatasetForType(type: ComponentType, data: any): FormGroup {
+    switch (type) {
+      case 'CARD':
+        return this.formService.createCardDataset(data);
+      case 'INDICATOR':
+        const indicatorDataset = this.formService.createIndicatorDataset();
+        indicatorDataset.patchValue(data);
+        return indicatorDataset;
+      case 'CHART':
+        const chartDataset = this.formService.createChartDataset();
+        chartDataset.patchValue(data);
+        return chartDataset;
+      case 'TABLE':
+        const tableRow = this.formService.createTableRow();
+        tableRow.patchValue(data);
+        return tableRow;
+      case 'CHIP':
+        const chipDataset = this.formService.createChipDataset();
+        chipDataset.patchValue(data);
+        return chipDataset;
+      case 'PANEL':
+        return this.formService.createPanelDataset(data);
+      case 'PANEL_LAYOUT':
+        return this.formService.createPanelLayoutDataset(data);
+      case 'BAR_INDICATOR':
+        const barIndicatorDataset =
+          this.formService.createBarIndicatorDataset();
+        barIndicatorDataset.patchValue(data);
+        return barIndicatorDataset;
+      case 'PROPERTY':
+        const propertyDataset = this.formService.createPropertyDataset();
+        propertyDataset.patchValue(data);
+        return propertyDataset;
+      case 'QUESTION':
+        const questionDataset = this.formService.createQuestionDataset();
+        questionDataset.patchValue(data);
+        return questionDataset;
+      case 'LIST':
+        const listDataset = this.formService.createListDataset();
+        listDataset.patchValue(data);
+        return listDataset;
+      case 'CHART_TABLE_INDICATOR':
+        const chartTableDataset =
+          this.formService.createChartTableIndicatorDataset();
+        chartTableDataset.patchValue(data);
+        return chartTableDataset;
+      case 'IMAGE':
+        const imageDataset = this.formService.createImageDataset();
+        imageDataset.patchValue(data);
+        return imageDataset;
+      case 'RANGE':
+        const rangeDataset = this.formService.createRangeComponentDataset();
+        rangeDataset.patchValue(data);
+        return rangeDataset;
+      case 'STATIC_TABLE':
+        const staticTableRow = this.formService.createTableRow();
+        staticTableRow.patchValue(data);
+        return staticTableRow;
+      case 'GRADE_INDICATOR':
+        const gradeIndicatorDataset =
+          this.formService.createGradeIndicatorDataset();
+        gradeIndicatorDataset.patchValue(data);
+        return gradeIndicatorDataset;
+      case 'STATIC_NOTE':
+        const staticNoteDataset = this.formService.createStaticNoteDataset();
+        staticNoteDataset.patchValue(data);
+        return staticNoteDataset;
+      default:
+        const defaultDataset = this.formService.createPanelDataset(data);
+        defaultDataset.patchValue(data);
+        return defaultDataset;
+    }
   }
 }
