@@ -1,6 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { FormGroup, FormArray, AbstractControl } from '@angular/forms';
 import { ReportBuilderFormService } from '../../../../../../service/report-builder-form.service';
+import { ReportBuilderDataService } from '../../../../../../service/report-builder-data.service';
 
 @Component({
   selector: 'app-range-data',
@@ -29,6 +30,7 @@ export class RangeDataComponent {
   ) => void;
   @Input() removeDatasetItem!: (controlName: string, index: number) => void;
   @Input() addDatasetItem!: (controlName: string) => void;
+  databuilderForm = inject(ReportBuilderDataService);
 
   get datasetArray(): FormArray | null {
     return this.form?.get('data.dataset') as FormArray | null;
@@ -41,7 +43,7 @@ export class RangeDataComponent {
 
   addRangeDatasetItem(): void {
     const datasetArray = this.form.get('data.dataset') as FormArray;
-    datasetArray.push(this.formService.createRangeComponentDataset());
+    datasetArray.push(this.databuilderForm.createRangeComponentDataset());
   }
 
   removeRangeDatasetItem(index: number): void {

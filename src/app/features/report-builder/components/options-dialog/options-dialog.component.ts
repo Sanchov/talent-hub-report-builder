@@ -5,6 +5,7 @@ import { ComponentType } from '../../../../models/component-types';
 import { ReportBuilderFormService } from '../../../../service/report-builder-form.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NarrativeService } from '../../../../service/narrative.service';
+import { ReportBuilderDataService } from '../../../../service/report-builder-data.service';
 
 @Component({
   selector: 'app-options-dialog',
@@ -13,6 +14,7 @@ import { NarrativeService } from '../../../../service/narrative.service';
 export class OptionsDialogComponent implements OnInit {
   form!: FormGroup;
   allDisplayOptions = ['CHART', 'TABLE', 'INDICATOR', 'WRAP'];
+  databuilderForm = inject(ReportBuilderDataService);
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<OptionsDialogComponent>);
   private formService = inject(ReportBuilderFormService);
@@ -136,7 +138,7 @@ export class OptionsDialogComponent implements OnInit {
       if (type !== 'CHART_TABLE_INDICATOR') {
         const currentData =
           this.data.target.get('data')?.value ||
-          this.formService.createComponentData(type).value;
+          this.databuilderForm.createComponentData(type).value;
 
         this.data.target.patchValue({
           type: type,
@@ -146,7 +148,7 @@ export class OptionsDialogComponent implements OnInit {
       } else {
         const currentData =
           this.data.target.get('data')?.value ||
-          this.formService.createComponentData(type).value;
+          this.databuilderForm.createComponentData(type).value;
 
         const updatedDataset = currentData.dataset.map((datasetItem: any) => {
           const updatedItem = { ...datasetItem };

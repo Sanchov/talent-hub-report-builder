@@ -1,6 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { ReportBuilderFormService } from '../../../../../../service/report-builder-form.service';
+import { ReportBuilderDataService } from '../../../../../../service/report-builder-data.service';
 
 @Component({
   selector: 'app-image-data',
@@ -28,6 +29,7 @@ export class ImageDataComponent {
   ) => void;
   @Input() removeDatasetItem!: (controlName: string, index: number) => void;
   @Input() addDatasetItem!: (controlName: string) => void;
+  databuilderForm = inject(ReportBuilderDataService);
 
   getDatasetControls(): FormGroup[] {
     return (this.form.get('data.dataset') as FormArray).controls as FormGroup[];
@@ -40,7 +42,7 @@ export class ImageDataComponent {
 
   addImageDatasetItem(): void {
     const datasetArray = this.form.get('data.dataset') as FormArray;
-    datasetArray.push(this.formService.createImageDataset());
+    datasetArray.push(this.databuilderForm.createImageDataset());
   }
 
   removeImageDatasetItem(index: number): void {

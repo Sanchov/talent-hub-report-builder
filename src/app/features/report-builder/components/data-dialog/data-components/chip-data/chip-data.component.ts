@@ -2,6 +2,7 @@ import { Component, inject, Input } from '@angular/core';
 import { FormGroup, FormArray, AbstractControl } from '@angular/forms';
 import { NarrativeService } from '../../../../../../service/narrative.service';
 import { ReportBuilderFormService } from '../../../../../../service/report-builder-form.service';
+import { ReportBuilderDataService } from '../../../../../../service/report-builder-data.service';
 
 @Component({
   selector: 'app-chip-data',
@@ -29,6 +30,8 @@ export class ChipDataComponent {
   ) => void;
   @Input() removeDatasetItem!: (controlName: string, index: number) => void;
   @Input() addDatasetItem!: (controlName: string) => void;
+  databuilderForm = inject(ReportBuilderDataService);
+
   private formService = inject(ReportBuilderFormService);
   getDatasetControls(): FormGroup[] {
     return (this.form.get('data.dataset') as FormArray).controls as FormGroup[];
@@ -37,7 +40,7 @@ export class ChipDataComponent {
 
   addChipItem() {
     const chipsArray = this.form.get('data.chips') as FormArray;
-    chipsArray.push(this.formService.createChipDataset());
+    chipsArray.push(this.databuilderForm.createChipDataset());
   }
 
   removeChipItem(index: number) {

@@ -1,14 +1,15 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { ReportBuilderFormService } from './report-builder-form.service';
 import { ComponentType } from '../models/component-types';
+import { ReportBuilderDataService } from './report-builder-data.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class JsonParserService {
-  constructor(private formService: ReportBuilderFormService) {}
-
+  formService = inject(ReportBuilderFormService);
+  databuilderForm = inject(ReportBuilderDataService);
   parseJsonInput(jsonString: string): { data: any; error: string | null } {
     try {
       const parsedData = JSON.parse(jsonString);
@@ -22,275 +23,343 @@ export class JsonParserService {
   }
 
   applyJsonToForm(reportForm: FormGroup, jsonData: any): void {
-    if (!jsonData) return;
+    if (!jsonData || !reportForm) return;
 
-    this.clearForm(reportForm);
+    try {
+      this.clearForm(reportForm);
 
-    if (jsonData.competencies && Array.isArray(jsonData.competencies)) {
-      this.addCompetencies(reportForm, jsonData.competencies);
-    }
+      if (jsonData.competencies && Array.isArray(jsonData.competencies)) {
+        this.addCompetencies(reportForm, jsonData.competencies);
+      }
 
-    if (jsonData.sections && Array.isArray(jsonData.sections)) {
-      this.addSections(reportForm, jsonData.sections);
+      if (jsonData.sections && Array.isArray(jsonData.sections)) {
+        this.addSections(reportForm, jsonData.sections);
+      }
+    } catch (error) {
+      console.error('Error applying JSON to form:', error);
     }
   }
 
   private clearForm(reportForm: FormGroup): void {
-    const sections = this.formService.getSections(reportForm);
-    while (sections.length > 0) {
-      sections.removeAt(0);
-    }
+    try {
+      const sections = this.formService.getSections(reportForm);
+      while (sections.length > 0) {
+        sections.removeAt(0);
+      }
 
-    const competencies = this.formService.getCompetency(reportForm);
-    competencies.clear();
+      const competencies = this.formService.getCompetency(reportForm);
+      competencies.clear();
+    } catch (error) {
+      console.error('Error clearing form:', error);
+    }
   }
 
   private addCompetencies(reportForm: FormGroup, competencies: any[]): void {
-    const competencyArray = this.formService.getCompetency(reportForm);
-    competencies.forEach((competency) => {
-      this.formService.addCompetency(reportForm);
-      const lastIndex = competencyArray.length - 1;
-      const competencyGroup = competencyArray.at(lastIndex) as FormGroup;
+    if (!competencies || !reportForm) return;
 
-      const validCompetency = {
-        name: competency.name || '',
-        equation: competency.equation || '',
-      };
-      competencyGroup.patchValue(validCompetency);
-    });
+    try {
+      const competencyArray = this.formService.getCompetency(reportForm);
+      competencies.forEach((competency) => {
+        try {
+          if (!competency) return;
+
+          this.formService.addCompetency(reportForm);
+          const lastIndex = competencyArray.length - 1;
+          const competencyGroup = competencyArray.at(lastIndex) as FormGroup;
+
+          const validCompetency = {
+            name: competency.name || '',
+            equation: competency.equation || '',
+          };
+          competencyGroup.patchValue(validCompetency);
+        } catch (error) {
+          console.error('Error adding competency:', competency, error);
+        }
+      });
+    } catch (error) {
+      console.error('Error processing competencies:', error);
+    }
   }
 
   private addSections(reportForm: FormGroup, sectionsData: any[]): void {
-    const sectionsArray = this.formService.getSections(reportForm);
+    if (!sectionsData || !reportForm) return;
 
-    sectionsData.forEach((sectionData, index) => {
-      this.formService.addSection(reportForm);
-      const newSection = sectionsArray.at(index) as FormGroup;
+    try {
+      const sectionsArray = this.formService.getSections(reportForm);
 
-      const sectionDataCopy = { ...sectionData };
-      delete sectionDataCopy.components;
+      sectionsData.forEach((sectionData, index) => {
+        try {
+          if (!sectionData) return;
 
-      newSection.patchValue({
-        id: sectionDataCopy.id || '',
-        header: sectionDataCopy.header || '',
-        subHeader: sectionDataCopy.subHeader || '',
-        description: sectionDataCopy.description || '',
-        badge: sectionDataCopy.badge || '',
-        order: sectionDataCopy.order || index + 1,
-        indicators: sectionDataCopy.indicators || { label: '', color: '' },
-        chip: sectionDataCopy.chip || {
-          label: '',
-          color: '#000000',
-          backgroundColor: '#ffffff',
-        },
-        imageUrl: sectionDataCopy.imageUrl || '',
+          this.formService.addSection(reportForm);
+          const newSection = sectionsArray.at(index) as FormGroup;
+
+          const sectionDataCopy = { ...sectionData };
+          delete sectionDataCopy.components;
+
+          newSection.patchValue({
+            id: sectionDataCopy.id || '',
+            header: sectionDataCopy.header || '',
+            subHeader: sectionDataCopy.subHeader || '',
+            description: sectionDataCopy.description || '',
+            badge: sectionDataCopy.badge || '',
+            order: sectionDataCopy.order || index + 1,
+            indicators: sectionDataCopy.indicators || { label: '', color: '' },
+            chip: sectionDataCopy.chip || {
+              label: '',
+              color: '#000000',
+              backgroundColor: '#ffffff',
+            },
+            imageUrl: sectionDataCopy.imageUrl || '',
+          });
+
+          if (sectionData.components && Array.isArray(sectionData.components)) {
+            this.addComponentsToSection(newSection, sectionData.components);
+          }
+        } catch (error) {
+          console.error('Error adding section:', sectionData, error);
+        }
       });
-
-      if (sectionData.components && Array.isArray(sectionData.components)) {
-        this.addComponentsToSection(newSection, sectionData.components);
-      }
-    });
+    } catch (error) {
+      console.error('Error processing sections:', error);
+    }
   }
 
   private addComponentsToSection(
     section: FormGroup,
     componentsData: any[]
   ): void {
-    console.log('=== Adding components to section ===');
-    const componentsArray = this.formService.getComponents(section);
+    if (!componentsData || !section) return;
 
-    componentsData.forEach((componentData, index) => {
-      console.log(`Processing component ${index}:`, componentData);
+    try {
+      const componentsArray = this.formService.getComponents(section);
 
-      if (!componentData.type) {
-        console.log('Skipping component - no type defined');
-        return;
-      }
+      componentsData.forEach((componentData, index) => {
+        try {
+          if (!componentData || !componentData.type) {
+            console.log('Skipping invalid component - no type defined');
+            return;
+          }
 
-      // Handle CHART_TABLE_INDICATOR specially
-      if (componentData.type === 'CHART_TABLE_INDICATOR') {
-        this.addChartTableIndicatorComponent(componentsArray, componentData);
-        return;
-      }
+          // Handle CHART_TABLE_INDICATOR specially
+          if (componentData.type === 'CHART_TABLE_INDICATOR') {
+            this.addChartTableIndicatorComponent(
+              componentsArray,
+              componentData
+            );
+            return;
+          }
 
-      const newComponent = this.formService.createComponent(
-        componentData.type as ComponentType,
-        {
-          type: componentData.type,
-          data: this.prepareComponentData(
-            componentData.type,
-            componentData.data || {}
-          ),
-          options: componentData.options || {},
-        }
-      );
-
-      console.log('Created new component:', newComponent.value);
-
-      if (
-        componentData.data?.dataset &&
-        Array.isArray(componentData.data.dataset)
-      ) {
-        console.log('Processing dataset for component');
-        const componentDataset = newComponent.get('data.dataset') as FormArray;
-        componentDataset.clear();
-
-        componentData.data.dataset.forEach((datasetItem: any) => {
-          console.log('Adding dataset item:', datasetItem);
-          const tempComponent = this.formService.createComponent(
+          const newComponent = this.formService.createComponent(
             componentData.type as ComponentType,
-            { data: { dataset: [datasetItem] } }
+            {
+              type: componentData.type,
+              data: this.prepareComponentData(
+                componentData.type,
+                componentData.data || {}
+              ),
+              options: componentData.options || {},
+            }
           );
-          const datasetGroup = (
-            tempComponent.get('data.dataset') as FormArray
-          ).at(0) as FormGroup;
-          componentDataset.push(datasetGroup);
-        });
-      }
 
-      if (
-        componentData.data?.chips &&
-        Array.isArray(componentData.data.chips)
-      ) {
-        console.log('Processing chips for component');
-        const chipsArray = newComponent.get('data.chips') as FormArray;
-        chipsArray.clear();
+          if (
+            componentData.data?.dataset &&
+            Array.isArray(componentData.data.dataset)
+          ) {
+            const componentDataset = newComponent.get(
+              'data.dataset'
+            ) as FormArray;
+            componentDataset.clear();
 
-        componentData.data.chips.forEach((chipItem: any) => {
-          console.log('Adding chip item:', chipItem);
-          const chipGroup = this.formService.createChipDataset();
-          chipGroup.patchValue(chipItem);
-          chipsArray.push(chipGroup);
-        });
-      }
+            componentData.data.dataset.forEach((datasetItem: any) => {
+              try {
+                if (!datasetItem) return;
+                const tempComponent = this.formService.createComponent(
+                  componentData.type as ComponentType,
+                  { data: { dataset: [datasetItem] } }
+                );
+                const datasetGroup = (
+                  tempComponent.get('data.dataset') as FormArray
+                ).at(0) as FormGroup;
+                componentDataset.push(datasetGroup);
+              } catch (error) {
+                console.error('Error adding dataset item:', datasetItem, error);
+              }
+            });
+          }
 
-      componentsArray.push(newComponent);
-    });
+          if (
+            componentData.data?.chips &&
+            Array.isArray(componentData.data.chips)
+          ) {
+            const chipsArray = newComponent.get('data.chips') as FormArray;
+            chipsArray.clear();
+
+              componentData.data.chips.forEach((chipItem: any) => {
+                try {
+                if (!chipItem) return;
+                const chipGroup = this.databuilderForm.createChipDataset();
+                chipGroup.patchValue(chipItem);
+                chipsArray.push(chipGroup);
+              } catch (error) {
+                console.error('Error adding chip item:', chipItem, error);
+              }
+            });
+          }
+
+          componentsArray.push(newComponent);
+        } catch (error) {
+          console.error('Error adding component:', componentData, error);
+        }
+      });
+    } catch (error) {
+      console.error('Error processing components:', error);
+    }
   }
 
   private addChartTableIndicatorComponent(
     componentsArray: FormArray,
     componentData: any
   ): void {
-    console.log('Processing CHART_TABLE_INDICATOR component:', componentData);
+    if (!componentData || !componentsArray) return;
 
-    // Create the base component
-    const newComponent = this.formService.createComponent(
-      'CHART_TABLE_INDICATOR' as ComponentType,
-      {
-        type: 'CHART_TABLE_INDICATOR',
-        data: {},
-        options: componentData.options || {},
+    try {
+      const newComponent = this.formService.createComponent(
+        'CHART_TABLE_INDICATOR' as ComponentType,
+        {
+          type: 'CHART_TABLE_INDICATOR',
+          data: {},
+          options: componentData.options || {},
+        }
+      );
+
+      if (
+        componentData.data?.dataset &&
+        Array.isArray(componentData.data.dataset)
+      ) {
+        const componentDataset = newComponent.get('data.dataset') as FormArray;
+        componentDataset.clear();
+
+        componentData.data.dataset.forEach(
+          (datasetItem: any, index: number) => {
+            try {
+              if (!datasetItem) return;
+
+              const newDatasetItem =
+                this.databuilderForm.createChartTableIndicatorDataset();
+
+              if (datasetItem.chart?.data) {
+                this.populateChartData(
+                  newDatasetItem.get('chart.data') as FormGroup,
+                  datasetItem.chart.data
+                );
+              }
+
+              if (datasetItem.table?.data) {
+                this.populateTableData(
+                  newDatasetItem.get('table.data') as FormGroup,
+                  datasetItem.table.data
+                );
+              }
+
+              if (datasetItem.indicator?.data) {
+                this.populateIndicatorData(
+                  newDatasetItem.get('indicator.data') as FormGroup,
+                  datasetItem.indicator.data
+                );
+              }
+
+              componentDataset.push(newDatasetItem);
+            } catch (error) {
+              console.error('Error adding dataset item:', datasetItem, error);
+            }
+          }
+        );
       }
-    );
 
-    console.log(
-      'Created base CHART_TABLE_INDICATOR component:',
-      newComponent.value
-    );
-
-    // Handle the dataset array
-    if (
-      componentData.data?.dataset &&
-      Array.isArray(componentData.data.dataset)
-    ) {
-      const componentDataset = newComponent.get('data.dataset') as FormArray;
-      componentDataset.clear();
-
-      componentData.data.dataset.forEach((datasetItem: any, index: number) => {
-        console.log(`Processing dataset item ${index}:`, datasetItem);
-
-        // Create a new chart-table-indicator dataset item
-        const newDatasetItem =
-          this.formService.createChartTableIndicatorDataset();
-
-        // Populate chart data
-        if (datasetItem.chart?.data) {
-          this.populateChartData(
-            newDatasetItem.get('chart.data') as FormGroup,
-            datasetItem.chart.data
-          );
-        }
-
-        // Populate table data
-        if (datasetItem.table?.data) {
-          this.populateTableData(
-            newDatasetItem.get('table.data') as FormGroup,
-            datasetItem.table.data
-          );
-        }
-
-        // Populate indicator data
-        if (datasetItem.indicator?.data) {
-          this.populateIndicatorData(
-            newDatasetItem.get('indicator.data') as FormGroup,
-            datasetItem.indicator.data
-          );
-        }
-
-        componentDataset.push(newDatasetItem);
-      });
+      componentsArray.push(newComponent);
+    } catch (error) {
+      console.error('Error adding chart-table-indicator component:', error);
     }
-
-    componentsArray.push(newComponent);
-    console.log('Added CHART_TABLE_INDICATOR component to array');
   }
 
   private populateChartData(chartDataGroup: FormGroup, chartData: any): void {
-    console.log('Populating chart data:', chartData);
+    if (!chartData || !chartDataGroup) return;
 
-    // Handle narrative fields
-    ['header', 'definition', 'labels'].forEach((field) => {
-      if (chartData[field] && chartDataGroup.get(field)) {
-        chartDataGroup.get(field)!.setValue(chartData[field]);
-      }
-    });
-
-    // Handle chart dataset
-    if (chartData.dataset && Array.isArray(chartData.dataset)) {
-      const chartDatasetArray = chartDataGroup.get('dataset') as FormArray;
-      chartDatasetArray.clear();
-
-      chartData.dataset.forEach((datasetItem: any) => {
-        const chartDatasetItem = this.formService.createChartDataset();
-        chartDatasetItem.patchValue(datasetItem);
-        chartDatasetArray.push(chartDatasetItem);
+    try {
+      ['header', 'definition', 'labels'].forEach((field) => {
+        if (chartData[field] && chartDataGroup.get(field)) {
+          chartDataGroup.get(field)!.setValue(chartData[field]);
+        }
       });
+
+      if (chartData.dataset && Array.isArray(chartData.dataset)) {
+        const chartDatasetArray = chartDataGroup.get('dataset') as FormArray;
+        chartDatasetArray.clear();
+
+        chartData.dataset.forEach((datasetItem: any) => {
+          try {
+            if (!datasetItem) return;
+            const chartDatasetItem = this.databuilderForm.createChartDataset();
+            chartDatasetItem.patchValue(datasetItem);
+            chartDatasetArray.push(chartDatasetItem);
+          } catch (error) {
+            console.error(
+              'Error adding chart dataset item:',
+              datasetItem,
+              error
+            );
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error populating chart data:', error);
     }
   }
 
   private populateTableData(tableDataGroup: FormGroup, tableData: any): void {
-    console.log('Populating table data:', tableData);
+    if (!tableData || !tableDataGroup) return;
 
-    // Handle narrative fields
-    ['headers', 'header', 'definition'].forEach((field) => {
-      if (tableData[field] && tableDataGroup.get(field)) {
-        tableDataGroup.get(field)!.setValue(tableData[field]);
+    try {
+      ['headers', 'header', 'definition'].forEach((field) => {
+        if (tableData[field] && tableDataGroup.get(field)) {
+          tableDataGroup.get(field)!.setValue(tableData[field]);
+        }
+      });
+
+      if (tableData.dataset && Array.isArray(tableData.dataset)) {
+        const tableDatasetArray = tableDataGroup.get('dataset') as FormArray;
+        tableDatasetArray.clear();
+
+        tableData.dataset.forEach((rowItem: any) => {
+          try {
+            if (!rowItem) return;
+            const tableRow = this.databuilderForm.createTableRow();
+            tableRow.patchValue(rowItem);
+            tableDatasetArray.push(tableRow);
+          } catch (error) {
+            console.error('Error adding table row:', rowItem, error);
+          }
+        });
       }
-    });
 
-    // Handle table dataset (rows)
-    if (tableData.dataset && Array.isArray(tableData.dataset)) {
-      const tableDatasetArray = tableDataGroup.get('dataset') as FormArray;
-      tableDatasetArray.clear();
+      if (tableData.chips && Array.isArray(tableData.chips)) {
+        const chipsArray = tableDataGroup.get('chips') as FormArray;
+        chipsArray.clear();
 
-      tableData.dataset.forEach((rowItem: any) => {
-        const tableRow = this.formService.createTableRow();
-        tableRow.patchValue(rowItem);
-        tableDatasetArray.push(tableRow);
-      });
-    }
-
-    // Handle chips
-    if (tableData.chips && Array.isArray(tableData.chips)) {
-      const chipsArray = tableDataGroup.get('chips') as FormArray;
-      chipsArray.clear();
-
-      tableData.chips.forEach((chipItem: any) => {
-        const chipGroup = this.formService.createChipDataset();
-        chipGroup.patchValue(chipItem);
-        chipsArray.push(chipGroup);
-      });
+        tableData.chips.forEach((chipItem: any) => {
+          try {
+            if (!chipItem) return;
+            const chipGroup = this.databuilderForm.createChipDataset();
+            chipGroup.patchValue(chipItem);
+            chipsArray.push(chipGroup);
+          } catch (error) {
+            console.error('Error adding chip item:', chipItem, error);
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error populating table data:', error);
     }
   }
 
@@ -298,49 +367,65 @@ export class JsonParserService {
     indicatorDataGroup: FormGroup,
     indicatorData: any
   ): void {
-    console.log('Populating indicator data:', indicatorData);
+    if (!indicatorData || !indicatorDataGroup) return;
 
-    // Handle narrative fields
-    ['header', 'definition', 'leftLabel', 'rightLabel'].forEach((field) => {
-      if (indicatorData[field] && indicatorDataGroup.get(field)) {
-        indicatorDataGroup.get(field)!.setValue(indicatorData[field]);
-      }
-    });
-
-    // Handle indicator dataset
-    if (indicatorData.dataset && Array.isArray(indicatorData.dataset)) {
-      const indicatorDatasetArray = indicatorDataGroup.get(
-        'dataset'
-      ) as FormArray;
-      indicatorDatasetArray.clear();
-
-      indicatorData.dataset.forEach((indicatorItem: any) => {
-        const indicatorDatasetItem = this.formService.createIndicatorDataset();
-        indicatorDatasetItem.patchValue(indicatorItem);
-        indicatorDatasetArray.push(indicatorDatasetItem);
+    try {
+      ['header', 'definition', 'leftLabel', 'rightLabel'].forEach((field) => {
+        if (indicatorData[field] && indicatorDataGroup.get(field)) {
+          indicatorDataGroup.get(field)!.setValue(indicatorData[field]);
+        }
       });
+
+      if (indicatorData.dataset && Array.isArray(indicatorData.dataset)) {
+        const indicatorDatasetArray = indicatorDataGroup.get(
+          'dataset'
+        ) as FormArray;
+        indicatorDatasetArray.clear();
+
+        indicatorData.dataset.forEach((indicatorItem: any) => {
+          try {
+            if (!indicatorItem) return;
+            const indicatorDatasetItem =
+              this.databuilderForm.createIndicatorDataset();
+            indicatorDatasetItem.patchValue(indicatorItem);
+            indicatorDatasetArray.push(indicatorDatasetItem);
+          } catch (error) {
+            console.error('Error adding indicator item:', indicatorItem, error);
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error populating indicator data:', error);
     }
   }
 
+  generateJsonFromForm(reportForm: FormGroup): string {
+    if (!reportForm) return '';
+    return JSON.stringify(reportForm.value, null, 2);
+  }
+
   private prepareComponentData(type: ComponentType, data: any): any {
-    const dataCopy = { ...data };
+    try {
+      const dataCopy = { ...data };
 
-    // Only strip dataset/chips for the types that handle them specially
-    if (type !== 'WRAPPED_ITEMS' && type !== 'CHART_TABLE_INDICATOR') {
-      delete dataCopy.dataset;
-      delete dataCopy.chips;
-    }
-
-    // Debug narratives
-    Object.keys(dataCopy).forEach((key) => {
-      if (
-        typeof dataCopy[key] === 'string' &&
-        dataCopy[key].startsWith('$narrative(')
-      ) {
-        console.log(`Found narrative field ${key}:`, dataCopy[key]);
+      if (type !== 'WRAPPED_ITEMS' && type !== 'CHART_TABLE_INDICATOR') {
+        delete dataCopy.dataset;
+        delete dataCopy.chips;
       }
-    });
 
-    return dataCopy;
+      Object.keys(dataCopy).forEach((key) => {
+        if (
+          typeof dataCopy[key] === 'string' &&
+          dataCopy[key].startsWith('$narrative(')
+        ) {
+          console.log(`Found narrative field ${key}:`, dataCopy[key]);
+        }
+      });
+
+      return dataCopy;
+    } catch (error) {
+      console.error('Error preparing component data:', error);
+      return {};
+    }
   }
 }

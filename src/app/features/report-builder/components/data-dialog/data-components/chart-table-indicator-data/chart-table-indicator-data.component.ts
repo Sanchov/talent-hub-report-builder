@@ -9,6 +9,7 @@ import { ReportBuilderFormService } from '../../../../../../service/report-build
 import { ComponentType } from '../../../../../../models/component-types';
 import { Component, inject, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ReportBuilderDataService } from '../../../../../../service/report-builder-data.service';
 
 @Component({
   selector: 'app-chart-table-indicator-data',
@@ -24,6 +25,7 @@ export class ChartTableIndicatorDataComponent implements OnInit, OnDestroy {
   };
   fb = inject(FormBuilder);
   formService = inject(ReportBuilderFormService);
+  databuilderForm = inject(ReportBuilderDataService);
 
   private subscriptions: Subscription[] = [];
 
@@ -38,7 +40,7 @@ export class ChartTableIndicatorDataComponent implements OnInit, OnDestroy {
     if (!this.form.get('data')) {
       this.form.addControl(
         'data',
-        this.formService.createComponentData(this.data.type, this.data.data)
+        this.databuilderForm.createComponentData(this.data.type, this.data.data)
       );
     }
 
@@ -46,7 +48,7 @@ export class ChartTableIndicatorDataComponent implements OnInit, OnDestroy {
     if (dataGroup && !dataGroup.get('dataset')) {
       dataGroup.addControl(
         'dataset',
-        this.fb.array([this.formService.createChartTableIndicatorDataset()])
+        this.fb.array([this.databuilderForm.createChartTableIndicatorDataset()])
       );
     }
 
@@ -82,7 +84,7 @@ export class ChartTableIndicatorDataComponent implements OnInit, OnDestroy {
 
       this.data.data.dataset.forEach((datasetItem: any) => {
         const newDatasetItem =
-          this.formService.createChartTableIndicatorDataset();
+          this.databuilderForm.createChartTableIndicatorDataset();
 
         // Apply chart data
         if (datasetItem.chart?.data) {
@@ -145,17 +147,17 @@ export class ChartTableIndicatorDataComponent implements OnInit, OnDestroy {
             switch (key) {
               case 'dataset':
                 if (control.parent?.get('type')?.value === 'CHART') {
-                  newItem = this.formService.createChartDataset();
+                  newItem = this.databuilderForm.createChartDataset();
                 } else if (control.parent?.get('type')?.value === 'TABLE') {
-                  newItem = this.formService.createTableRow();
+                  newItem = this.databuilderForm.createTableRow();
                 } else if (control.parent?.get('type')?.value === 'INDICATOR') {
-                  newItem = this.formService.createIndicatorDataset();
+                  newItem = this.databuilderForm.createIndicatorDataset();
                 } else {
                   newItem = this.fb.group(item);
                 }
                 break;
               case 'chips':
-                newItem = this.formService.createChipDataset();
+                newItem = this.databuilderForm.createChipDataset();
                 break;
               default:
                 newItem = this.fb.group(item);
@@ -169,7 +171,6 @@ export class ChartTableIndicatorDataComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 
   get datasetArray(): FormArray {
     const dataGroup = this.form.get('data');
@@ -245,7 +246,9 @@ export class ChartTableIndicatorDataComponent implements OnInit, OnDestroy {
   }
 
   addDatasetItem() {
-    this.datasetArray.push(this.formService.createChartTableIndicatorDataset());
+    this.datasetArray.push(
+      this.databuilderForm.createChartTableIndicatorDataset()
+    );
   }
 
   removeDatasetItem(index: number) {
@@ -272,7 +275,7 @@ export class ChartTableIndicatorDataComponent implements OnInit, OnDestroy {
 
   addTableRow(tableControl: AbstractControl) {
     const rowsArray = this.getTableRows(tableControl);
-    rowsArray.push(this.formService.createTableRow());
+    rowsArray.push(this.databuilderForm.createTableRow());
   }
 
   removeTableRow(tableControl: AbstractControl, index: number) {
@@ -282,7 +285,7 @@ export class ChartTableIndicatorDataComponent implements OnInit, OnDestroy {
 
   addIndicatorItem(indicatorControl: AbstractControl) {
     const datasetArray = this.getIndicatorDataset(indicatorControl);
-    datasetArray.push(this.formService.createIndicatorDataset());
+    datasetArray.push(this.databuilderForm.createIndicatorDataset());
   }
 
   removeIndicatorItem(indicatorControl: AbstractControl, index: number) {

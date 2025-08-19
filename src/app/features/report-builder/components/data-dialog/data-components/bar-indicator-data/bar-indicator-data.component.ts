@@ -1,6 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { FormGroup, FormArray, AbstractControl } from '@angular/forms';
 import { ReportBuilderFormService } from '../../../../../../service/report-builder-form.service';
+import { ReportBuilderDataService } from '../../../../../../service/report-builder-data.service';
 
 @Component({
   selector: 'app-bar-indicator-data',
@@ -29,6 +30,7 @@ export class BarIndicatorDataComponent {
   ) => void;
   @Input() removeDatasetItem!: (controlName: string, index: number) => void;
   @Input() addDatasetItem!: (controlName: string) => void;
+  databuilderForm = inject(ReportBuilderDataService);
 
   get datasetArray(): FormArray | null {
     return this.form?.get('data.dataset') as FormArray | null;
@@ -41,9 +43,7 @@ export class BarIndicatorDataComponent {
 
   addBarIndicatorDatasetItem(): void {
     const datasetArray = this.form.get('data.dataset') as FormArray;
-    datasetArray.push(
-      this.formService.createBarIndicatorDataset()
-    );
+    datasetArray.push(this.databuilderForm.createBarIndicatorDataset());
   }
 
   removeBarIndicatorDatasetItem(index: number): void {

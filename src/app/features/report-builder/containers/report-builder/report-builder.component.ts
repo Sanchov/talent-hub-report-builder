@@ -27,7 +27,19 @@ export class ReportBuilderComponent implements OnInit {
   dialog = inject(MatDialog);
   jsonParserService = inject(JsonParserService);
   @ViewChild(JsonParserComponent) jsonParserComponent!: JsonParserComponent;
+  ngAfterViewInit() {
+    this.setupFormChangeListener();
+  }
 
+  setupFormChangeListener() {
+    this.reportForm.valueChanges.subscribe(() => {
+      const json = this.jsonParserService.generateJsonFromForm(this.reportForm);
+    });
+  }
+
+  get formJson(): string {
+    return this.jsonParserService.generateJsonFromForm(this.reportForm);
+  }
   ngOnInit(): void {
     this.reportForm = this.formService.createReportForm();
   }

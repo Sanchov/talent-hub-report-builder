@@ -10,6 +10,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ComponentType } from '../../../../models/component-types';
 import { ReportBuilderFormService } from '../../../../service/report-builder-form.service';
 import { NarrativeService } from '../../../../service/narrative.service';
+import { ReportBuilderDataService } from '../../../../service/report-builder-data.service';
 
 @Component({
   selector: 'app-data-dialog',
@@ -22,6 +23,7 @@ export class DataDialogComponent implements OnInit {
   private dialogRef = inject(MatDialogRef<DataDialogComponent>);
   private formService = inject(ReportBuilderFormService);
   private narrativeService = inject(NarrativeService);
+  databuilderForm = inject(ReportBuilderDataService);
 
   data = inject(MAT_DIALOG_DATA) as {
     type: ComponentType;
@@ -37,7 +39,7 @@ export class DataDialogComponent implements OnInit {
     }
 
     this.form = this.fb.group({
-      data: this.formService.createComponentData(this.data.type),
+      data: this.databuilderForm.createComponentData(this.data.type),
     });
 
     this.patchFormWithData();
@@ -220,7 +222,7 @@ export class DataDialogComponent implements OnInit {
 
   addChipItem() {
     const chipsArray = this.form.get('data.chips') as FormArray;
-    chipsArray.push(this.formService.createChipDataset());
+    chipsArray.push(this.databuilderForm.createChipDataset());
   }
 
   removeChipItem(index: number) {
@@ -297,25 +299,25 @@ export class DataDialogComponent implements OnInit {
 
     switch (this.data.type) {
       case 'CARD':
-        newItem = this.formService.createCardDataset();
+        newItem = this.databuilderForm.createCardDataset();
         break;
       case 'INDICATOR':
-        newItem = this.formService.createIndicatorDataset();
+        newItem = this.databuilderForm.createIndicatorDataset();
         break;
       case 'CHART':
-        newItem = this.formService.createChartDataset();
+        newItem = this.databuilderForm.createChartDataset();
         break;
       case 'TABLE':
-        newItem = this.formService.createTableRow();
+        newItem = this.databuilderForm.createTableRow();
         break;
       case 'CHIP':
-        newItem = this.formService.createChipDataset();
+        newItem = this.databuilderForm.createChipDataset();
         break;
       case 'GRADE_INDICATOR':
-        newItem = this.formService.createGradeIndicatorDataset();
+        newItem = this.databuilderForm.createGradeIndicatorDataset();
         break;
       case 'STATIC_NOTE':
-        newItem = this.formService.createStaticNoteDataset();
+        newItem = this.databuilderForm.createStaticNoteDataset();
         break;
 
       default:

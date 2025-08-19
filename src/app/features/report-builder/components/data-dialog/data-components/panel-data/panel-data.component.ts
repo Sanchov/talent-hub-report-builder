@@ -8,6 +8,7 @@ import {
 import { ComponentType } from '../../../../../../models/component-types';
 import { NarrativeService } from '../../../../../../service/narrative.service';
 import { ReportBuilderFormService } from '../../../../../../service/report-builder-form.service';
+import { ReportBuilderDataService } from '../../../../../../service/report-builder-data.service';
 
 @Component({
   selector: 'app-panel-data',
@@ -25,13 +26,14 @@ export class PanelDataComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private formService: ReportBuilderFormService,
-    private narrativeService: NarrativeService
+    private narrativeService: NarrativeService,
+    private databuilderForm: ReportBuilderDataService
   ) {}
 
   ngOnInit() {
     if (!this.form) {
       this.form = this.fb.group({
-        data: this.formService.createComponentData(this.data.type),
+        data: this.databuilderForm.createComponentData(this.data.type),
       });
       this.form.get('data')?.patchValue(this.data.data || {});
     }
@@ -103,7 +105,7 @@ export class PanelDataComponent implements OnInit {
   }
 
   addPanelItem() {
-    this.datasetArray.push(this.formService.createPanelDataset());
+    this.datasetArray.push(this.databuilderForm.createPanelDataset());
   }
 
   removePanelItem(index: number) {

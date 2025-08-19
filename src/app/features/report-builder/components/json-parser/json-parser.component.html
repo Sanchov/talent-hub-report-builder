@@ -11,6 +11,8 @@
 }'
         rows="15"
         class="json-textarea"
+        (focus)="isTextareaFocused = true"
+        (blur)="isTextareaFocused = false"
       ></textarea>
     </mat-form-field>
 
@@ -34,6 +36,15 @@
         (click)="clearField()"
       >
         Clear
+      </button>
+      <button
+        mat-raised-button
+        color="accent"
+        type="button"
+        (click)="refreshJson(formJson)"
+        *ngIf="isTextareaFocused"
+      >
+        Refresh from Form
       </button>
     </div>
   </form>

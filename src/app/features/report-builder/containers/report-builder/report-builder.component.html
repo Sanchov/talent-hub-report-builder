@@ -50,42 +50,6 @@
                   </button>
                 </div>
               </div>
-
-              <!-- Component Preview -->
-              <div class="component-preview">
-                <ng-container [ngSwitch]="component.get('type')?.value">
-                  <!-- Card Component -->
-                  <div *ngSwitchCase="'CARD'" class="preview-card">
-                    <h4>
-                      {{ component.get("data.header")?.value || "Card Header" }}
-                    </h4>
-                    <p>
-                      {{
-                        component.get("data.definition")?.value ||
-                          "Card content"
-                      }}
-                    </p>
-                  </div>
-
-                  <!-- Indicator Component -->
-                  <div *ngSwitchCase="'INDICATOR'" class="preview-indicator">
-                    <div class="indicator-value">
-                      {{ component.get("data.dataset.0.value")?.value || "0" }}%
-                    </div>
-                    <div class="indicator-label">
-                      {{
-                        component.get("data.dataset.0.name")?.value ||
-                          "Indicator"
-                      }}
-                    </div>
-                  </div>
-
-                  <!-- Default Preview -->
-                  <div *ngSwitchDefault class="preview-default">
-                    {{ component.get("type")?.value }} Component
-                  </div>
-                </ng-container>
-              </div>
             </mat-card>
           </div>
         </div>
@@ -111,4 +75,5 @@
   </button>
 </div>
 
-<app-json-parser (jsonParsed)="onJsonParsed($event)"></app-json-parser>
+<app-json-parser [formJson]="formJson" (jsonParsed)="onJsonParsed($event)">
+</app-json-parser>
